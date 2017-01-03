@@ -169,7 +169,7 @@ for (i in 1:length(gene_index)){
      columns[k] <- strsplit(inFile$name[i], '_')[[1]][1]
     k <- k + 1
 }
-    colnames(Fd) <- c('Sample', columns)
+    colnames(Fd) <- c('Sample Name', columns)
 
 
   } else if ( length(ref) == 0) {

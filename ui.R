@@ -5,7 +5,7 @@ shinyUI(fluidPage(
   titlePanel("Uploading Files"),
   sidebarLayout(
     sidebarPanel(
-      helpText("Prosze wybrac dane z eksperymentu RT-PCR"),
+      helpText("Krok 3: Prosze wybrac dane z eksperymentu RT-PCR"),
       fileInput("file1", label = "Wybierz pliki", multiple =
                   T),
       
@@ -17,12 +17,12 @@ shinyUI(fluidPage(
     
     
     mainPanel(
-      helpText("Prosze wybrac plik konfiguracyjny"),
+      helpText("Krok 1: Prosze wybrac plik konfiguracyjny"),
       fileInput("file2", label = "choose file", multiple =
                   T),
       br(),
       
-      helpText("Prosze wybrac dowolna ilosc genow referencyjnych z listy"),
+      helpText("Krok 2: Prosze wybrac dowolna ilosc genow referencyjnych z listy"),
       uiOutput("refgen"),
       
       tableOutput('tabelka')

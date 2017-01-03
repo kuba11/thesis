@@ -38,10 +38,10 @@ source(paste(getwd(), 'funkcja1.R', sep = "/"))
   
   output$down <- downloadHandler(
     filename=function() {
-      paste('wynik','.txt', sep='')
+      paste('wynik','.xlsx', sep='')
     },
     content = function(file){
-      write.table(Fd(), file, rownames = F)
+      write.xlsx(Fd(), file, row.names = F)
       
     })
 
