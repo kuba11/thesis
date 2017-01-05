@@ -1,19 +1,12 @@
-# setwd('C:/Users/jakpo_000/Desktop/Nauka/Inzynierka/Program/Dane')
-# x <- c('ATP6V1_pow2_jajniki_22_09_2010.xls','COL11A1_jajniki_15_09_2010.xls', 'COL11A1_pow2_jajniki_15_09_2010.xls')
-# y <- c('config file.xlsx')
-funkcja1 <- function (x, y, z){
+funkcja1 <- function (x, z){
   
   #Tworzymy macierz, gdzie ka¿da cz. listy to 1 plik
   inFile <- x
   a = list()
-  for (i in 1:length(x[, 1])){ #x[, 1]
-  a[[i]] <- matrix(read.xlsx(inFile$datapath[i], header = F, 1))#inFile$datapath[i]
+  for (i in 1:length(x[, 1])){ 
+  a[[i]] <- matrix(read.xlsx(inFile$datapath[i], header = F, 1))
   }
   
-  #wczytanie pliku konfiguracji z wydajnoœci¹ i nazwami genów ref.
-  inFile2 <- y
-  efficiency <- read.xlsx(inFile2$datapath, header = F, 1)#inFile2$datapath
-  gene_names <- read.xlsx(inFile2$datapath, header = T, 2)#inFile2$datapath
   
   #Œrednia z podwójnych prób
   
@@ -136,9 +129,8 @@ for (i in gene_index){
         Q[match(j, gene_index), ] <- (Q[match(i, gene_index), ] + Q[match(j, gene_index), ])/2
         xx <- Q[match(i, gene_index), ]
         yy <- Q[match(j, gene_index), ]
-        Q[(match(i, gene_index)), ] <- length(a[[1]][[1]][-1])
         gene_remove[k] <- i
-        remove_row[k] <- j
+        remove_row[k] <- match(j, gene_index)
         k <- k + 1
         #Uaktualniæ gene index?
        
@@ -154,8 +146,12 @@ Q <- matrix(Q, nrow = length(gene_index), byrow = F)
 Fd <- matrix( ncol = length(gene_index), nrow = (length(a[[1]][[1]])-1))
 
 for (i in 1:length(gene_index)){
-  Fd[, i] <- Q[, i]/refQ
+  Fd[, i] <- Q[i, ]/refQ
 }
+### Sprawdzamy, czy liczba próbek jest taka sama
+if (dim(refQ)[2] != dim(Q)[2]){
+  return(NULL)
+}else{
 
 
 
@@ -170,13 +166,14 @@ for (i in 1:length(gene_index)){
     k <- k + 1
 }
     colnames(Fd) <- c('Sample Name', columns)
-
+}
 
   } else if ( length(ref) == 0) {
     Fd <- c('Brak genów referencyjnych')
   } else{
     Fd <- c('Brak genów do analizy (Wszystkie geny referencyjne)')
   
-  }
+    
+    }
   return(Fd)
 }
