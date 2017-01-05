@@ -46,7 +46,9 @@ shinyServer(function(input, output) {
       for (i in 2:(dim(Fd())[2])){
       y[, i-1] <- as.numeric(data.matrix(Fd()[, i]))
       }
-      x <- colnames(Fd()[, 2:(dim(Fd())[2])])
+      
+      x <- colnames(Fd())
+      x <- x[-c(1)]
     colnames(y) <- x
     x <- rep(x, each = dim(Fd())[1])
     x <- matrix(x, ncol = dim(Fd())[2]-1)
