@@ -44,7 +44,7 @@ shinyServer(function(input, output) {
       
       y <- matrix(ncol = (dim(Fd())[2]-1), nrow = dim(Fd())[1]  )
       for (i in 2:(dim(Fd())[2])){
-      y[, i-1] <- as.numeric(data.matrix(Fd()[, i]))
+      y[, i-1] <- as.numeric(as.character(data.frame(lapply(Fd()[, i], as.character), stringsAsFactors=FALSE)))
       }
       
       x <- colnames(Fd())
@@ -57,28 +57,36 @@ shinyServer(function(input, output) {
     })
 
     #Wykresy pudelkowe - pacjenci
+
+
+
+    output$patplot <- renderUI({
+    plot_output_list <- lapply(1:dim(Fd())[1], function(i) {
+  output[[paste0('b', i)]] <- renderPlot({
     
-    output$patplot <- renderPlot({
-      
-      if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0)
-      {return(NULL)}
-      
-      y <- matrix(ncol = (dim(Fd())[2]-1), nrow = dim(Fd())[1]  )
-      for (i in 2:(dim(Fd())[2])){
-        y[, i-1] <- as.numeric(data.matrix(Fd()[, i]))
-      }
-      x <- data.matrix(Fd()[, 1])
-      x <- rep(x, each = dim(Fd())[2]-1)
-      x <- matrix(x, ncol = dim(Fd())[2]-1, byrow = T)
-      
-
-      boxplot(y ~ x, outline = F)
-
-      
+    
+            y <- as.numeric(as.character(data.frame(lapply(Fd()[i, -c(1)], as.character), stringsAsFactors=FALSE)))
+            
+    x <- data.matrix(Fd()[i, 1])
+    x <- rep(x, each = dim(Fd())[2]-1)
+    
+    
+    boxplot(y ~ x, outline = F, main = x[1])
+    
+  })
+})
+    do.call(tagList, plot_output_list)
     })
-  
-  output$down <- downloadHandler(
-    filename=function() {
+
+    
+    
+    
+    
+    
+    
+    
+    output$down <- downloadHandler(
+      filename=function() {
       paste('wynik','.xlsx', sep='')
     },
     content = function(file){
