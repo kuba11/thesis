@@ -75,18 +75,18 @@ for (i in ref_index){
         if (strsplit(inFile$name[i], '_')[[1]][1] == strsplit(inFile$name[j], '_')[[1]][1] & strsplit(inFile$name[j], '_')[[1]][2] != 'pow2'){
           # Dopasowanie indeksu genu z danych do indeksu wartoœci Q
           preQ[match(j, ref_index), ] <- (preQ[match(i, ref_index), ] + preQ[match(j, ref_index), ])/2
-          preQ[(match(i, ref_index)), ] <- length(a[[1]][[1]][-1])
           gene_remove[k] <- i
-          remove_row[k] <- j
+          remove_row[k] <- match(i, ref_index)
           k <- k + 1
-          #Uaktualniæ gene index?
+          
           
         }}}}
-  if (length(remove_row) > 0 ){
   remove_row <- remove_row[is.finite(remove_row)]
-  preQ <- preQ[-c(remove_row), ]
+  if (length(remove_row) > 0){
+    preQ <- preQ[-remove_row, ]
   }
-  
+  ref_index_old <- ref_index
+  ref_index <- setdiff(ref_index, gene_remove)
   preQ <- matrix(preQ, nrow = length(ref_index), byrow = F)
   
   
@@ -115,7 +115,7 @@ for (i in ref_index){
   
   # Sprawdzamy, czy mamy pliki dla wielu powtórzeñ 
 
-gene_index <- c(1:(length(a)+length(ref_index)))[-ref_index]
+gene_index <- c(1:(length(a)+length(ref_index)))[-ref_index_old]
 k <- 1
 gene_remove <- c()
 remove_row <- c()
@@ -127,10 +127,8 @@ for (i in gene_index){
       if (strsplit(inFile$name[i], '_')[[1]][1] == strsplit(inFile$name[j], '_')[[1]][1] & strsplit(inFile$name[j], '_')[[1]][2] != 'pow2'){
         # Dopasowanie indeksu genu z danych do indeksu wartoœci Q
         Q[match(j, gene_index), ] <- (Q[match(i, gene_index), ] + Q[match(j, gene_index), ])/2
-        xx <- Q[match(i, gene_index), ]
-        yy <- Q[match(j, gene_index), ]
         gene_remove[k] <- i
-        remove_row[k] <- match(j, gene_index)
+        remove_row[k] <- match(i, gene_index)
         k <- k + 1
         #Uaktualniæ gene index?
        
