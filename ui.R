@@ -27,13 +27,14 @@ shinyUI(fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Tool description", helpText("This is a tool which allows to performa a simple and quick Real-time PCR data analysis."),
+        tabPanel("Tool description", helpText("This is a tool which allows to perform a simple and quick Real-time PCR data analysis.
+                 It uses the Pfaffl method for quantification and the efficiency values from the experiment."),
                  helpText("The following files are necessary:"),
                  helpText("- the file with reference gene names,"),
                  img(src = "ref_names.png", height = 250, width = 150),
                  helpText("- the Real-time PCR data."),
                  img(src = "qPCR.png", height = 250, width = 400),
-                 helpText("The file name must have the following format: gene_pow2_other"),
+                 helpText("The file names of the data must have the following format: gene_pow2_other"),
                  helpText("Where:"),
                  helpText("gene - gene name,"),
                  helpText("pow2 - for second repeat only, otherwise this part should be ommited,"),

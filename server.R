@@ -79,11 +79,7 @@ shinyServer(function(input, output) {
     })
 
     
-    
-    
-    
-    
-    
+
     
     output$down <- downloadHandler(
       filename=function() {

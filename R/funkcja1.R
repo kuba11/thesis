@@ -7,7 +7,6 @@ funkcja1 <- function (x, z){
   a[[i]] <- matrix(read.xlsx(inFile$datapath[i], header = F, 1))
   }
   
-  
   #Œrednia z podwójnych prób
   
   #Selekcja genów referencyjnych
@@ -45,7 +44,7 @@ for (i in ref_index){
 ### Sprawdzanie, czy s¹ geny referencyjne i zwyk³e 
   if (length(ref) > 0 & length(a) > 0){
   
-### Obliczanie œredniej geometrycznej z danych
+### Obliczenia dla genów referencyjnych
   #Obliczanie dCt dla ref
   refCt <- matrix(nrow = length(ref), ncol = (length(ref[[1]][[1]]))-1)
   refdCt <- refCt
@@ -167,9 +166,9 @@ if (dim(refQ)[2] != dim(Q)[2]){
 }
 
   } else if ( length(ref) == 0) {
-    Fd <- c('Brak genów referencyjnych')
+    Fd <- c('No reference genes')
   } else{
-    Fd <- c('Brak genów do analizy (Wszystkie geny referencyjne)')
+    Fd <- c('No genes for the analysys (all genes are reference genes)')
   
     
     }
