@@ -37,27 +37,52 @@ shinyServer(function(input, output) {
 
   #Wykresy pudelkowe - geny
     
-    output$genplot <- renderPlot({
+  output$genplot <- renderUI({
       
       if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0)
         {return(NULL)}
       
-      y <- matrix(ncol = (dim(Fd())[2]-1), nrow = dim(Fd())[1]  )
+      #Boxplot zbiorczy
+    plota <- renderPlot({
+      y <- matrix(ncol = (dim(Fd())[2]-1), nrow = dim(Fd())[1])
       for (i in 2:(dim(Fd())[2])){
       y[, i-1] <- as.numeric(as.character(data.frame(lapply(Fd()[, i], as.character), stringsAsFactors=FALSE)))
       }
-      
+    
       x <- colnames(Fd())
       x <- x[-c(1)]
     colnames(y) <- x
     x <- rep(x, each = dim(Fd())[1])
     x <- matrix(x, ncol = dim(Fd())[2]-1)
+      boxplot (y ~ x, outline = F, main = 'Boxplots for all genes')
       
-      boxplot (y ~ x, outline = F)
     })
+      
+      #Boxploty dla genow
 
-    #Wykresy pudelkowe - pacjenci
-
+      plotb <- lapply(1:(dim(Fd())[2] -1), function(i) {
+        output[[paste0('b', i)]] <- renderPlot({
+          
+          
+          y <- as.numeric(as.character(data.frame(lapply(Fd()[, i+1], as.character), stringsAsFactors=FALSE)))
+          
+          x <- colnames(Fd())
+          x <- x[-c(1)]
+          x<- x[i]
+          x <- rep(x, each = dim(Fd())[1])
+          x <- matrix(x, ncol = 1)
+          
+          boxplot(y ~ x, outline = F, main = x[1])
+          
+        })
+      })
+      
+      plot_output_list <- list(plota, plotb)
+      do.call(tagList, plot_output_list)
+    })
+    
+ 
+    
 
 
     output$patplot <- renderUI({
@@ -71,7 +96,7 @@ shinyServer(function(input, output) {
     x <- rep(x, each = dim(Fd())[2]-1)
     
     
-    boxplot(y ~ x, outline = F, main = x[1])
+    boxplot(y ~ x, outline = F, main = paste(c('Sample'), x[1], sep = ' '))
     
   })
 })

@@ -31,7 +31,7 @@ shinyUI(fluidPage(
                  It uses the Pfaffl method for quantification and the efficiency values from the experiment."),
                  helpText("The following files are necessary:"),
                  helpText("- the file with reference gene names,"),
-                 img(src = "ref_names.png", height = 250, width = 150),
+                 img(src = "ref_names.png", height = 118, width = 109),
                  helpText("- the Real-time PCR data."),
                  img(src = "qPCR.png", height = 250, width = 400),
                  helpText("The file names of the data must have the following format: gene_pow2_other"),
@@ -47,7 +47,7 @@ shinyUI(fluidPage(
                  
                  ),
         tabPanel("Results", tableOutput("tabelka")),
-        tabPanel("Boxplots - genes", plotOutput("genplot")),
+        tabPanel("Boxplots - genes", uiOutput("genplot")),
         tabPanel("Boxplots - samples", uiOutput("patplot"))
         )
       

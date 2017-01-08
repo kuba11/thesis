@@ -114,7 +114,7 @@ for (i in ref_index){
   
   # Sprawdzamy, czy mamy pliki dla wielu powtórzeñ 
 
-gene_index <- c(1:(length(a)+length(ref_index)))[-ref_index_old]
+gene_index <- c(1:(length(a)+length(ref_index_old)))[-ref_index_old]
 k <- 1
 gene_remove <- c()
 remove_row <- c()
