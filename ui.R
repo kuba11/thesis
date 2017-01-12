@@ -47,7 +47,6 @@ shinyUI(fluidPage(
                  
                  ),
         tabPanel("Results", tableOutput("tabelka")),
-        tabPanel("Boxplots - genes", uiOutput("genplot")),
         tabPanel("Boxplots - samples", uiOutput("patplot"))
         )
       
