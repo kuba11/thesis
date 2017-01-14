@@ -1,0 +1,87 @@
+SDS 2.3	AQ Results	1.0
+Filename	p1_07_10_2014_KK_cDNA_384H cz1
+PlateID	
+Assay Type	Absolute Quantification
+Run DateTime	10/7/14 2:21:09 PM
+Operator	
+ThermalCycleParams	
+
+Sample Information
+
+Well	Sample Name	Detector Name	Reporter	Task	Ct	Quantity	Qty Mean	Qty StdDev	Ct Median	Ct Mean	Ct StdDev	Baseline Type	Baseline Start	Baseline Stop	Threshold Type	Threshold	FOS	HMD	LME	EW	BPR	NAW	HNS	HRN	EAF	BAF	TAF	CAF	
+50	121+122p1	Stanley	FAM	Unknown	25.73154							Automatic			Manual	0.1168													
+74	121+122p2	Stanley	FAM	Unknown	25.737988							Automatic			Manual	0.1168													
+98	124+125p1	Stanley	FAM	Unknown	25.68714							Automatic			Manual	0.1168													
+122	124+125p2	Stanley	FAM	Unknown	25.777597							Automatic			Manual	0.1168													
+146	127+128p1	Stanley	FAM	Unknown	25.969643							Automatic			Manual	0.1168													
+170	127+128p2	Stanley	FAM	Unknown	25.99304							Automatic			Manual	0.1168													
+97	14p1	Stanley	FAM	Unknown	27.428095							Automatic			Manual	0.1168													
+121	14p2	Stanley	FAM	Unknown	27.574324							Automatic			Manual	0.1168													
+49	16p1	Stanley	FAM	Unknown	27.234985							Automatic			Manual	0.1168													
+73	16p2	Stanley	FAM	Unknown	27.227957							Automatic			Manual	0.1168													
+1	18p1	Stanley	FAM	Unknown	27.19307							Automatic			Manual	0.1168													
+25	18p2	Stanley	FAM	Unknown	27.32141							Automatic			Manual	0.1168													
+241	32p1	Stanley	FAM	Unknown	30.409395							Automatic			Manual	0.1168													
+265	32p2	Stanley	FAM	Unknown	30.3394							Automatic			Manual	0.1168													
+193	34p1	Stanley	FAM	Unknown	30.149017							Automatic			Manual	0.1168													
+217	34p2	Stanley	FAM	Unknown	30.273329							Automatic			Manual	0.1168													
+145	36p1	Stanley	FAM	Unknown	30.436563							Automatic			Manual	0.1168													
+169	36p2	Stanley	FAM	Unknown	30.291775							Automatic			Manual	0.1168													
+2	50p1	Stanley	FAM	Unknown	30.251879							Automatic			Manual	0.1168													
+26	50p2	Stanley	FAM	Unknown	30.24352							Automatic			Manual	0.1168													
+337	52p1	Stanley	FAM	Unknown	30.39519							Automatic			Manual	0.1168													
+361	52p2	Stanley	FAM	Unknown	30.367607							Automatic			Manual	0.1168													
+289	54p1	Stanley	FAM	Unknown	30.374779							Automatic			Manual	0.1168													
+313	54p2	Stanley	FAM	Unknown	30.572874							Automatic			Manual	0.1168													
+290	55p1	Stanley	FAM	Unknown	30.118376							Automatic			Manual	0.1168													
+314	55p2	Stanley	FAM	Unknown	30.095596							Automatic			Manual	0.1168													
+242	58p1	Stanley	FAM	Unknown	29.558578							Automatic			Manual	0.1168													
+266	58p2	Stanley	FAM	Unknown	29.448656							Automatic			Manual	0.1168													
+194	60p1	Stanley	FAM	Unknown	30.106995							Automatic			Manual	0.1168													
+218	60p2	Stanley	FAM	Unknown	30.209839							Automatic			Manual	0.1168													
+51	62p1	Stanley	FAM	Unknown	33.210297							Automatic			Manual	0.1168													
+75	62p2	Stanley	FAM	Unknown	33.160423							Automatic			Manual	0.1168													
+3	64p1	Stanley	FAM	Unknown	33.42601							Automatic			Manual	0.1168													
+27	64p2	Stanley	FAM	Unknown	32.742973							Automatic			Manual	0.1168													
+338	66p1	Stanley	FAM	Unknown	33.035984							Automatic			Manual	0.1168													
+362	66p2	Stanley	FAM	Unknown	33.197273							Automatic			Manual	0.1168													
+195	67p1	Stanley	FAM	Unknown	32.648544							Automatic			Manual	0.1168													
+219	67p2	Stanley	FAM	Unknown	32.67977							Automatic			Manual	0.1168													
+147	70p1	Stanley	FAM	Unknown	32.58984							Automatic			Manual	0.1168													
+171	70p2	Stanley	FAM	Unknown	32.74651							Automatic			Manual	0.1168													
+99	71p1	Stanley	FAM	Unknown	32.71267							Automatic			Manual	0.1168													
+123	71p2	Stanley	FAM	Unknown	32.225876							Automatic			Manual	0.1168													
+339	74p1	Stanley	FAM	Unknown	34.950176							Automatic			Manual	0.1168													
+363	74p2	Stanley	FAM	Unknown	34.536182							Automatic			Manual	0.1168													
+291	76p1	Stanley	FAM	Unknown	34.296467							Automatic			Manual	0.1168													
+315	76p2	Stanley	FAM	Unknown	35.17567							Automatic			Manual	0.1168													
+243	78p1	Stanley	FAM	Unknown	36.806343							Automatic			Manual	0.1168													
+267	78p2	Stanley	FAM	Unknown	34.81979							Automatic			Manual	0.1168													
+100	79p1	Stanley	FAM	Unknown	30.428272							Automatic			Manual	0.1168													
+124	79p2	Stanley	FAM	Unknown	30.373161							Automatic			Manual	0.1168													
+52	81p1	Stanley	FAM	Unknown	29.58168							Automatic			Manual	0.1168													
+76	81p2	Stanley	FAM	Unknown	29.45328							Automatic			Manual	0.1168													
+4	83p1	Stanley	FAM	Unknown	29.506231							Automatic			Manual	0.1168													
+28	83p2	Stanley	FAM	Unknown	29.66689							Automatic			Manual	0.1168													
+244	86p1	Stanley	FAM	Unknown	33.04486							Automatic			Manual	0.1168													
+268	86p2	Stanley	FAM	Unknown	33.19525							Automatic			Manual	0.1168													
+196	88p1	Stanley	FAM	Unknown	33.008312							Automatic			Manual	0.1168													
+220	88p2	Stanley	FAM	Unknown	32.977707							Automatic			Manual	0.1168													
+148	90p1	Stanley	FAM	Unknown	34.063564							Automatic			Manual	0.1168													
+172	90p2	Stanley	FAM	Unknown	33.792217							Automatic			Manual	0.1168													
+292	K1p1	Stanley	FAM	Unknown	28.143059							Automatic			Manual	0.1168													
+316	K1p2	Stanley	FAM	Unknown	28.169142							Automatic			Manual	0.1168													
+340	K2p1	Stanley	FAM	Unknown	28.188898							Automatic			Manual	0.1168													
+364	K2p2	Stanley	FAM	Unknown	26.787043							Automatic			Manual	0.1168													
+5	K3p1	Stanley	FAM	Unknown	27.462433							Automatic			Manual	0.1168													
+29	K3p2	Stanley	FAM	Unknown	27.48658							Automatic			Manual	0.1168													
+53	NTC	Stanley	FAM	NTC	Undetermined							Automatic			Manual	0.1168						true							
+77	NTC	Stanley	FAM	NTC	Undetermined							Automatic			Manual	0.1168						true							
+Slope		cycles/log decade
+Y-Intercept		
+R^2		
+
+
+
+NAP	LPL
+	

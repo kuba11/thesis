@@ -58,7 +58,7 @@ for (i in ref_index){
   
   for (i in 1:length(ref)){
     refCt[i, ] <- as.numeric(as.character(ref[[i]][, 6]))
-    refCal <- mean(as.numeric(as.character(ref[[i]][(sample_no-5):sample_no, 6])))
+    refCal <- mean(as.numeric(as.character(ref[[i]][(sample_no-5):sample_no, 6])), na.rm = T)
     refdCt[i, ] <- refCal - refCt[i, ]
   }
   
@@ -70,7 +70,7 @@ for (i in ref_index){
   
   #Œrednia geometryczna
   for (i in 1:dim(preQ)[2]){
-    refQ[i] <- (prod(preQ[, i]))^(1/length(preQ[, i])) 
+    refQ[i] <- (prod(preQ[, i], na.rm = T))^(1/sum(!is.na(preQ[, i]))) 
   }
 
   
@@ -82,7 +82,7 @@ for (i in ref_index){
 
   for (i in 1:length(a)){
     Ct[i, ] <- as.numeric(as.character(a[[i]][, 6]))
-    Cal[i] <- mean(as.numeric(as.character(a[[i]][(sample_no-5):sample_no, 6])))
+    Cal[i] <- mean(as.numeric(as.character(a[[i]][(sample_no-5):sample_no, 6])), na.rm = T)
   }
     dCt <- Cal - Ct
   
@@ -112,7 +112,7 @@ if (dim(refQ)[2] != dim(Q)[2]){
 
     #Nazwy wierszy i kolumn
     
-    Fd <- cbind(as.character(a[[1]][, 1]), as.character(a[[1]][, 2]), Fd)
+    Fd <- cbind(as.character(a[[1]][, 2]), Fd)
     k <- 1 
     columns <- c()
     
@@ -122,7 +122,7 @@ if (dim(refQ)[2] != dim(Q)[2]){
     
     Fd[is.na(Fd)] <- c('No data')
 }
-    colnames(Fd) <- c('Well', 'Sample Name', columns)
+    colnames(Fd) <- c('Sample Name', columns)
 }
 
   } else if ( length(ref) == 0) {

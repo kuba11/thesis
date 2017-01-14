@@ -2,10 +2,10 @@ library(shiny)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-  titlePanel("Real-time PCR data analysis tool"),
+  titlePanel("Simple qPCR"),
   sidebarLayout(
     sidebarPanel(
-      helpText("Step 1: Please select the file with reference gene names"),
+      helpText("Step 1: Please select the file with efficiencies"),
       fileInput("file2", label = "Choose the file", multiple =
                   T),
       helpText("Step 2: Please select any number of reference genes from the list"),
@@ -30,16 +30,15 @@ shinyUI(fluidPage(
         tabPanel("Tool description", helpText("This is a tool which allows to perform a simple and quick Real-time PCR data analysis.
                  It uses the Pfaffl method for quantification and the efficiency values from the experiment."),
                  helpText("The following files are necessary:"),
-                 helpText("- the file with reference gene names,"),
-                 img(src = "ref_names.png", height = 118, width = 109),
-                 helpText("- the Real-time PCR data."),
-                 img(src = "qPCR.png", height = 250, width = 400),
-                 helpText("The file names of the data must have the following format: gene_pow2_other"),
+                 helpText("- the file with gene list and efficiencies,"),
+                 img(src = "eff.png", height = 210, width = 120),
+                 helpText("- the Real-time PCR data in SDS 2.3 format."),
+                 img(src = "qPCR.png", height = 300, width = 450),
+                 helpText("The file names of the data must have the following format: gene_other"),
                  helpText("Where:"),
                  helpText("gene - gene name,"),
-                 helpText("pow2 - for second repeat only, otherwise this part should be ommited,"),
                  helpText("other - any additional information."),
-                 helpText("The output table will be visible in the Results tab, while the boxplots will be available in their corresponding parts."),
+                 helpText("The output table will be visible in the Results tab, while the boxplots will be available in the boxplots tab."),
                  helpText("If you wish to save the results, press the 'Download the results' button."),
                  helpText("Note: The program assumes that each plate has the same samples."),
                  br(),

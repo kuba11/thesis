@@ -39,15 +39,16 @@ shinyServer(function(input, output) {
 #Boxplots for samples
     output$patplot <- renderUI({
       
-      if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0)
+      if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0 | length(dim(Fd())) == 0)
         return(NULL)
       
+
     plot_output_1 <- lapply(1:dim(Fd())[1], function(i) {
   output[[paste0('b', i)]] <- renderPlot({
 
-    y <- as.numeric(as.character(data.frame(lapply(Fd()[i, -c(1:2)], as.character), stringsAsFactors=FALSE)))
+    y <- as.numeric(as.character(data.frame(lapply(Fd()[i, -c(1)], as.character), stringsAsFactors=FALSE)))
     x <- data.matrix(Fd()[i, 1])
-    x <- rep(x, each = dim(Fd())[2]-2)
+    x <- rep(x, each = dim(Fd())[2]-1)
     
     
       try(boxplot(y ~ x, outline = F, main = paste(c('Sample'), x[1], sep = ' ')), silent = T)
@@ -56,9 +57,9 @@ shinyServer(function(input, output) {
 })
     plot_output_2 <- renderPlot({
       
-      y <- as.numeric(as.character(data.frame(lapply(Fd()[, -c(1:2)], as.character), stringsAsFactors=FALSE)))
-      x <- data.matrix(Fd()[, 2])
-      x <- rep(x, each = dim(Fd())[2]-2)
+      y <- as.numeric(as.character(data.frame(lapply(Fd()[, -c(1)], as.character), stringsAsFactors=FALSE)))
+      x <- data.matrix(Fd()[, 1])
+      x <- rep(x, each = dim(Fd())[2]-1)
       
       boxplot(y ~ x, outline = F, main = c("Boxplot for all samples"))
     })
@@ -66,6 +67,7 @@ shinyServer(function(input, output) {
     
     plot_output_list <- c(plot_output_2, plot_output_1)
     do.call(tagList, plot_output_list)
+
     })
 
     
