@@ -1,13 +1,16 @@
-funkcja1 <- function (x, z){
+funkcja1 <- function (x, y, z){
   
   #Tworzymy macierz, gdzie ka¿da cz. listy to 1 plik
   inFile <- x
   a = list()
   for (i in 1:length(x[, 1])){ 
-  a[[i]] <- matrix(read.xlsx(inFile$datapath[i], header = F, 1))
+  a[[i]] <- read.table(textConnection(rev(rev(readLines(inFile$datapath[i]))[-(1:10)])),
+                              skip = 10, header = T, sep = "\t", nrows = 68)
   }
   
-  #Œrednia z podwójnych prób
+  #Wydajnoœæ
+  inFile2 <- y
+  eff <- read.xlsx(inFile2$datapath, header = T, 1)[, 2]
   
   #Selekcja genów referencyjnych
   
@@ -46,50 +49,26 @@ for (i in ref_index){
   
 ### Obliczenia dla genów referencyjnych
   #Obliczanie dCt dla ref
-  refCt <- matrix(nrow = length(ref), ncol = (length(ref[[1]][[1]]))-1)
+    
+  sample_no <- length(ref[[1]][, 1])
+  refCt <- data.frame(matrix(nrow = length(ref), ncol = sample_no))
   refdCt <- refCt
   preQ <- refCt
-  refQ <- matrix(nrow = 1, ncol = (length(ref[[1]][[1]]))-1)
+  refQ <- data.frame(matrix(nrow = 1, ncol = sample_no))
   
   for (i in 1:length(ref)){
-    refCt[i, ] <- c(as.numeric(sub(",", ".", (ref[[i]][[2]][-1]), fixed=TRUE)))
-    refCal <- max(ref[[i]][[4]][!is.na(ref[[i]][[ 4]])])
+    refCt[i, ] <- as.numeric(as.character(ref[[i]][, 6]))
+    refCal <- mean(as.numeric(as.character(ref[[i]][(sample_no-5):sample_no, 6])))
     refdCt[i, ] <- refCal - refCt[i, ]
   }
   
   # Obliczamy Q, czyli potrzebne s¹ wydajnoœci
   for (i in 1:length(ref)){
-    preQ[i, ] <- min(ref[[i]][[4]][!is.na(ref[[i]][[ 4]])])^refdCt[i, ]
+    preQ[i, ] <- eff[ref_index[i]]^refdCt[i, ]
   }
   
-  # Sprawdzamy, czy mamy pliki dla wielu powtórzeñ - Uwaga na to!
   
-  gene_remove <- c()
-  remove_row <- c()
-  
-  for (i in ref_index){
-    if (strsplit(inFile$name[i], '_')[[1]][2] == 'pow2'){
-      for (j in ref_index){
-        # Szukamy 2giego pliku bez pow2
-        if (strsplit(inFile$name[i], '_')[[1]][1] == strsplit(inFile$name[j], '_')[[1]][1] & strsplit(inFile$name[j], '_')[[1]][2] != 'pow2'){
-          # Dopasowanie indeksu genu z danych do indeksu wartoœci Q
-          preQ[match(j, ref_index), ] <- (preQ[match(i, ref_index), ] + preQ[match(j, ref_index), ])/2
-          gene_remove[k] <- i
-          remove_row[k] <- match(i, ref_index)
-          k <- k + 1
-          
-          
-        }}}}
-  remove_row <- remove_row[is.finite(remove_row)]
-  if (length(remove_row) > 0){
-    preQ <- preQ[-remove_row, ]
-  }
-  ref_index_old <- ref_index
-  ref_index <- setdiff(ref_index, gene_remove)
-  preQ <- matrix(preQ, nrow = length(ref_index), byrow = F)
-  
-  
-  #Œrednia
+  #Œrednia geometryczna
   for (i in 1:dim(preQ)[2]){
     refQ[i] <- (prod(preQ[, i]))^(1/length(preQ[, i])) 
   }
@@ -97,72 +76,53 @@ for (i in ref_index){
   
 ### Przygotowanie danych
   # Obliczanie dCt
-  Ct <- matrix( nrow = length(a), ncol = (length(a[[1]][[1]])-1))
+  Ct <- data.frame(matrix(nrow = length(a), ncol = sample_no))
   Q <- Ct
   Cal <- c()
 
   for (i in 1:length(a)){
-    Ct[i, ] <- c(as.numeric(sub(",", ".", (a[[i]][[2]][-1]), fixed=TRUE)))
-    Cal[i] <- max(a[[i]][[ 4]][!is.na(a[[i]][[4]])])
+    Ct[i, ] <- as.numeric(as.character(a[[i]][, 6]))
+    Cal[i] <- mean(as.numeric(as.character(a[[i]][(sample_no-5):sample_no, 6])))
   }
-  dCt <- Cal - Ct
+    dCt <- Cal - Ct
   
   # Obliczamy Q, czyli potrzebne s¹ wydajnoœci
+  
+  gene_index <- c(1:(length(a)+length(ref_index)))[-ref_index]
+  
   for (i in 1:length(a)){
-    Q[i, ] <- min(a[[i]][[4]][!is.na(a[[i]][[ 4]])])^dCt[i, ]
+    Q[i, ] <- eff[gene_index[i]]^dCt[i, ]
   }
   
-  # Sprawdzamy, czy mamy pliki dla wielu powtórzeñ 
 
-gene_index <- c(1:(length(a)+length(ref_index_old)))[-ref_index_old]
-k <- 1
-gene_remove <- c()
-remove_row <- c()
-
-for (i in gene_index){
-  if (strsplit(inFile$name[i], '_')[[1]][2] == 'pow2'){
-    for (j in gene_index){
-      # Szukamy 2giego pliku bez pow2
-      if (strsplit(inFile$name[i], '_')[[1]][1] == strsplit(inFile$name[j], '_')[[1]][1] & strsplit(inFile$name[j], '_')[[1]][2] != 'pow2'){
-        # Dopasowanie indeksu genu z danych do indeksu wartoœci Q
-        Q[match(j, gene_index), ] <- (Q[match(i, gene_index), ] + Q[match(j, gene_index), ])/2
-        gene_remove[k] <- i
-        remove_row[k] <- match(i, gene_index)
-        k <- k + 1
-        #Uaktualniæ gene index?
-       
-      }}}}
-if (length(remove_row) > 0){
-Q <- Q[-remove_row, ]
-}
-gene_index <- setdiff(gene_index, gene_remove)
-Q <- matrix(Q, nrow = length(gene_index), byrow = F)
-  
 ### Fold difference
 
-Fd <- matrix( ncol = length(gene_index), nrow = (length(a[[1]][[1]])-1))
+Fd <- data.frame(matrix(nrow = length(gene_index), ncol = sample_no))
 
 for (i in 1:length(gene_index)){
-  Fd[, i] <- Q[i, ]/refQ
+  Fd[i, ] <- Q[i, ]/refQ
 }
+Fd <- t(Fd)
+
 ### Sprawdzamy, czy liczba próbek jest taka sama
 if (dim(refQ)[2] != dim(Q)[2]){
   return(NULL)
 }else{
 
 
-
     #Nazwy wierszy i kolumn
     
-    Fd <- cbind(as.character(a[[1]][[1]][-1]), Fd)
-    k <- 1
+    Fd <- cbind(as.character(a[[1]][, 1]), as.character(a[[1]][, 2]), Fd)
+    k <- 1 
     columns <- c()
     
     for (i in gene_index){
      columns[k] <- strsplit(inFile$name[i], '_')[[1]][1]
     k <- k + 1
+    
+    Fd[is.na(Fd)] <- c('No data')
 }
-    colnames(Fd) <- c('Sample Name', columns)
+    colnames(Fd) <- c('Well', 'Sample Name', columns)
 }
 
   } else if ( length(ref) == 0) {
