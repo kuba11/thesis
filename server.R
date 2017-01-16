@@ -23,7 +23,8 @@ shinyServer(function(input, output) {
 
     Fd <- funkcja1(input$file1, input$file2, input$refergene)
   
-    Fd})
+    Fd
+    })
 
   #Macierz wynikowa
   output$tabelka <- renderTable({
