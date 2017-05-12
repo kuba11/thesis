@@ -3,6 +3,7 @@ library('xlsx')
 
 shinyServer(function(input, output) {
   source(paste(getwd(), 'R/funkcja1.R', sep = "/"))
+  source(paste(getwd(), 'R/funkcja2.R', sep = "/"))
 
 
   #Wybor genow referencyjnych
@@ -20,9 +21,15 @@ shinyServer(function(input, output) {
   
   #Obliczanie Fold difference
   Fd <- reactive({
+    
+    if (input$configtype == "Efficiency file"){
 
     Fd <- funkcja1(input$file1, input$file2, input$refergene)
   
+    }else{
+      Fd <- funkcja2(input$file1, input$file2, input$refergene)
+    }
+    
     Fd
     })
 

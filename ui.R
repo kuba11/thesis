@@ -45,6 +45,11 @@ shinyUI(fluidPage(
                  br()
                  
                  ),
+        tabPanel("Advanced options", radioButtons(
+          "configtype",
+          label = "File type:",
+          choices = list("Efficiency file", "Full configuration file"), selected = "Full configuration file"
+        )),
         tabPanel("Results", tableOutput("tabelka")),
         tabPanel("Boxplots - samples", uiOutput("patplot"))
         )
