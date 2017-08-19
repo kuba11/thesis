@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "library(shiny)\n\n# Define UI for application that draws a histogram\nshinyUI(fluidPage(\n  titlePanel(\"Simple qPCR\"),\n  sidebarLayout(\n    sidebarPanel(\n      helpText(\"Step 1: Please select the file with efficiencies\"),\n      fileInput(\"file2\", label = \"Choose the file\", multiple =\n                  T),\n      helpText(\"Step 2: Please select any number of reference genes from the list\"),\n      uiOutput(\"refgen\"),\n      \n      br(),\n      helpText(\"Step 3: Please choose the Real-time PCR data\"),\n      fileInput(\"file1\", label = \"Choose the files\", multiple =\n                  T),\n      p(\"Step 4: Press this button to perform the analysis\"),\n      actionButton(\"act\",\"ANALYSE\"),\n      br(),\n      br(),\n      p(\"Press this button in order to download the results\"),\n      downloadButton(\"down\",\"Download the results\")\n      \n      ),\n    \n    \n    mainPanel(\n      tabsetPanel(\n        tabPanel(\"Tool description\", helpText(\"This is a tool which allows to perform a simple and quick Real-time PCR data analysis.\n                 It uses the Pfaffl method for quantification and the efficiency values from the experiment.\"),\n                 helpText(\"The following files are necessary:\"),\n                 helpText(\"- the file with gene list and efficiencies,\"),\n                 img(src = \"eff.png\", height = 210, width = 120),\n                 helpText(\"- the Real-time PCR data in SDS 2.3 format.\"),\n                 img(src = \"qPCR.png\", height = 300, width = 450),\n                 helpText(\"The file names of the data must have the following format: gene_other\"),\n                 helpText(\"Where:\"),\n                 helpText(\"gene - gene name,\"),\n                 helpText(\"other - any additional information.\"),\n                 helpText(\"The output table will be visible in the Results tab, while the boxplots will be available in the boxplots tab.\"),\n                 helpText(\"If you wish to save the results, press the 'Download the results' button.\"),\n                 helpText(\"Note: The program assumes that each plate has the same samples.\"),\n                 br(),\n                 br()\n                 \n                 ),\n        tabPanel(\"Advanced options\", radioButtons(\n          \"configtype\",\n          label = \"File type:\",\n          choices = list(\"Efficiency file\", \"Full configuration file\"), selected = \"Full configuration file\"\n        )),\n        tabPanel(\"Results\", tableOutput(\"tabelka\")),\n        tabPanel(\"Boxplots - samples\", uiOutput(\"patplot\"))\n        )\n      \n\n    )\n  )\n))",
+    "created" : 1494497161082.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3158762735",
+    "id" : "5B9C18B7",
+    "lastKnownWriteTime" : 1494580944,
+    "last_content_update" : 1494580944634,
+    "path" : "C:/Users/jakpo_000/Desktop/Nauka/Inzynierka/Program/thesis/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,33 @@
+SDS 2.3	AQ Results	1.0
+Filename	pl2_07_10_2014_KK_cDNA_384H
+PlateID	
+Assay Type	Absolute Quantification
+Run DateTime	10/7/14 4:29:22 PM
+Operator	
+ThermalCycleParams	
+
+Sample Information
+
+Well	Sample Name	Detector Name	Reporter	Task	Ct	Quantity	Qty Mean	Qty StdDev	Ct Median	Ct Mean	Ct StdDev	Baseline Type	Baseline Start	Baseline Stop	Threshold Type	Threshold	FOS	HMD	LME	EW	BPR	NAW	HNS	HRN	EAF	BAF	TAF	CAF	
+1	a	Stanley	FAM	Unknown	0.9							Automatic			Manual	0.112289794													
+2	b	Stanley	FAM	Unknown	1.1							Automatic			Manual	0.112289794													
+3	c	Stanley	FAM	Unknown	1.3							Automatic			Manual	0.112289794													
+4	d	Stanley	FAM	Unknown	1.5							Automatic			Manual	0.112289794													
+5	e	Stanley	FAM	Unknown	2.5							Automatic			Manual	0.112289794													
+297	K1p1	Stanley	FAM	Unknown	1							Automatic			Manual	0.112289794													
+321	K1p2	Stanley	FAM	Unknown	1						Automatic			Manual	0.112289794													
+345	K2p1	Stanley	FAM	Unknown	1							Automatic			Manual	0.112289794													
+369	K2p2	Stanley	FAM	Unknown	1							Automatic			Manual	0.112289794													
+10	K3p1	Stanley	FAM	Unknown	1							Automatic			Manual	0.112289794													
+34	K3p2	Stanley	FAM	Unknown	1							Automatic			Manual	0.112289794													
+63	NTC	Stanley	FAM	NTC	Undetermined							Automatic			Manual	0.15483536						true							
+87	NTC	Stanley	FAM	NTC	Undetermined							Automatic			Manual	0.15483536						true							
+
+Slope		cycles/log decade
+Y-Intercept		
+R^2		
+
+
+
+NAP	LPL
+	

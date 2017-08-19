@@ -31,6 +31,7 @@ shinyServer(function(input, output) {
     }
     
     Fd
+    
     })
 
   #Macierz wynikowa
@@ -49,8 +50,11 @@ shinyServer(function(input, output) {
       
       if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0 | length(dim(Fd())) == 0)
         return(NULL)
+    
       
-
+      
+      
+### Single boxplots
     plot_output_1 <- lapply(1:dim(Fd())[1], function(i) {
   output[[paste0('b', i)]] <- renderPlot({
 
@@ -63,20 +67,27 @@ shinyServer(function(input, output) {
 
   })
 })
+    ### First plot for all samples
     plot_output_2 <- renderPlot({
       
-      y <- as.numeric(as.character(data.frame(lapply(Fd()[, -c(1)], as.character), stringsAsFactors=FALSE)))
+      y <- Fd()[, -c(1)]
+      y <- as.numeric(c(unlist(t(y))))
       x <- data.matrix(Fd()[, 1])
       x <- rep(x, each = dim(Fd())[2]-1)
       
+      
+      
+      
       boxplot(y ~ x, outline = F, main = c("Boxplot for all samples"))
+      # plot(length(dim(y)), 1)
+      #!!!wydajnosci
     })
     
     
     plot_output_list <- c(plot_output_2, plot_output_1)
     do.call(tagList, plot_output_list)
 
-    })
+   })
 
     
 

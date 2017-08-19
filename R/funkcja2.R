@@ -1,19 +1,21 @@
 funkcja2 <- function (x, y, z){
   
-  # Tworzymy macierz, gdzie ka¿da cz. listy to 1 plik
+  # Tworzymy macierz, gdzie ka?da cz. listy to 1 plik
   inFile <- x
   a = list()
   for (i in 1:length(x[, 1])){ 
-    a[[i]] <- read.table(textConnection(rev(rev(readLines(inFile$datapath[i]))[-(1:10)])),
-                         skip = 10, header = T, sep = "\t", nrows = 68)
+    a.temp <- read.table(inFile$datapath[i], sep = '\t', col.names = rep('a', 29), fill = T)
+    a.temp <- a.temp[which(a.temp[, 1] == "Well"): which(a.temp[, 1] == "Slope"), 1:6]
+    colnames(a.temp) <- as.character(unlist(a.temp[1,]))
+    a[[i]] <- a.temp[-c(1, (length(a.temp[, 1])-2):length(a.temp[, 1])), ]
   }
   
-  # Wydajnoœæ
+  # Wydajno??
   inFile2 <- y
   plates <- read.xlsx(inFile2$datapath, header = T, 4)
   
   efficiency <- read.xlsx(inFile2$datapath, header = T, 1)
-  eff <- efficiency[efficiency[, 1] %in% as.matrix(data.frame(strsplit(inFile$name, '_'))[1, ]), 2]
+  eff <- efficiency[efficiency[, 1] %in% as.matrix(data.frame(strsplit(inFile$name, '_'))[1, ]), ]
   
   # Creating a  matrix with all sample names for all sets based on the config file
   
@@ -24,40 +26,35 @@ funkcja2 <- function (x, y, z){
   
   # Slecting reference genes
 
-  k = 1
+  #Selekcja genów referencyjnych
+  
+  k = 1  
   ref <- list()
   j <- 1
   liczba_usuniec <- 0
   ref_index <- c()
+  
+  
+  gene_index <- c(1:length(a))
+  a.name <- lapply(inFile$name, strsplit, '_')
+  a.name <- unlist(lapply(a.name, function(l) l[[1]][1])) #Choosing firs element (gene name) from the lists
+  ref_index <- which(z == a.name)
+  ref_index <- ref_index[is.finite(ref_index)]
+  gene_index <- gene_index[-ref_index]
+  ref <- a[ref_index]
+  a[ref_index] <- NULL
+  
+  
+  ### Sprawdzanie, czy geny z pliku z wydajnoœciami pasuj¹ do nazw plików
+  name_match <- match(a.name, eff[, 1])
+  xxx = eff[,1]
+  eff <- eff[name_match, ]
+  eff <- eff[, 2]
 
-
-  for (i in 1:length(z)){
-    for (j in 1:length(a)){
-      if (strsplit(inFile$name[j], '_')[[1]][1] == z[i]){
-        #Przypisywanie plików z genami ref do nowej zmiennej
-        ref[[k]] = a[[j]]
-
-
-
-        k=k+1
-        #Usuwanie z listy normalnych genów
-
-
-        ref_index[k - 1] <- j
-      }}}
-
-  k <- 1
-  for (i in ref_index){
-    j <- i + 1 - k
-    a[[j]] <- NULL
-    k <- k + 1
-  }
-
-
-  ### Sprawdzanie, czy s¹ geny referencyjne i zwyk³e
+  ### Sprawdzanie, czy s? geny referencyjne i zwyk?e
   if (length(ref) > 0 & length(a) > 0){
 
-    ### Obliczenia dla genów referencyjnych
+    ### Obliczenia dla gen?w referencyjnych
     #Obliczanie dCt dla ref
 
     sample_no <- length(ref[[1]][, 1])
@@ -77,7 +74,7 @@ funkcja2 <- function (x, y, z){
     }
 
     
-    # Obliczamy Q, czyli potrzebne s¹ wydajnoœci
+    # Obliczamy Q, czyli potrzebne s? wydajno?ci
     for (i in 1:length(ref)){
       preQ[i, ] <- eff[ref_index[i]]^refdCt[i, ]
     }
@@ -116,7 +113,7 @@ funkcja2 <- function (x, y, z){
       }
     dCt <- Cal - Ct
 
-    # Obliczamy Q, czyli potrzebne s¹ wydajnoœci
+    # Obliczamy Q, czyli potrzebne s? wydajno?ci
 
     gene_index <- c(1:(length(a)+length(ref_index)))[-ref_index]
 
@@ -128,7 +125,7 @@ funkcja2 <- function (x, y, z){
 
     ### Fold difference
 
-    Fd <- data.frame(matrix(ncol = length(gene_index), nrow = length(uniques))) #Tu by³o sample_no
+    Fd <- data.frame(matrix(ncol = length(gene_index), nrow = length(uniques))) #Tu bylo sample_no
     rownames(Fd) <- uniques
     x <- matrix()
 
@@ -143,13 +140,13 @@ funkcja2 <- function (x, y, z){
         }else{
         Fd[j, i] <- NA
         }
-        Fd[j, i] <- Fd[j, i]/refQ[which(rownames(Fd)[j] == colnames(refQ))] #Ÿle, trzeba dopasowaæ próbki z genów do ref.
+        Fd[j, i] <- Fd[j, i]/refQ[which(rownames(Fd)[j] == colnames(refQ))] #?le, trzeba dopasowa? pr?bki z gen?w do ref.
       }
     }
 
+    
     Fd <- cbind(uniques, Fd)
-
-
+    
       #Nazwy wierszy i kolumn
 
 
@@ -163,7 +160,7 @@ funkcja2 <- function (x, y, z){
         Fd[is.na(Fd)] <- c('No data')
       }
       colnames(Fd) <- c('Sample Name', columns)
-    
+
 
   } else if ( length(ref) == 0) {
     Fd <- c('No reference genes')
@@ -172,18 +169,20 @@ funkcja2 <- function (x, y, z){
 
 
   }
+
   return(Fd)
          
 }
 
 # Wczytanie danych
-# Zapytaæ, czy o to chodzi i o dane z ró¿nymi nazwami próbek (raczej nie bêdzie)
-# Zbadaæ to NA w match()
+# Zapytac, czy o to chodzi i o dane z roznymi nazwami probek (raczej nie bedzie)
+# Zbada? to NA w match()
 
-# Genenames[i, ] - sprawdziæ iloœæ próbek dla ka¿dego !!! +
-# Trzeba dopasowaæ próbki z genów do ref. Trzeba to zrobiæ w pêtli, gdzie siê liczy œredni¹ geometryczn¹
+# Genenames[i, ] - sprawdzic ilocs probek dla kazdego !!! +
+# Trzeba dopasowac probki z genow do ref. Trzeba to zrobic w petli, gdzie sie liczy srednia geometryczna
 
-#Nie dzi³a dla kilku genów ref!!!
-#Wyniki s¹ w ró¿nej kolejnoœci
+#Nie dzila dla kilku genow ref!!!
+#Wyniki sa w roznej kolejnosci
 
 #samnames is the same size as Q, and hac names in the cells corresponding to each Q value
+#Czy zmienily‚ sie wybÃ³r wydajnoÅ›ci na zÅ‚y?

@@ -1,5 +1,6 @@
 library(shiny)
 
+
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
   titlePanel("Simple qPCR"),
@@ -34,6 +35,7 @@ shinyUI(fluidPage(
                  img(src = "eff.png", height = 210, width = 120),
                  helpText("- the Real-time PCR data in SDS 2.3 format."),
                  img(src = "qPCR.png", height = 300, width = 450),
+                 helpText("Check the Advanced tab for more information."),
                  helpText("The file names of the data must have the following format: gene_other"),
                  helpText("Where:"),
                  helpText("gene - gene name,"),
@@ -45,11 +47,21 @@ shinyUI(fluidPage(
                  br()
                  
                  ),
-        tabPanel("Advanced options", radioButtons(
-          "configtype",
-          label = "File type:",
-          choices = list("Efficiency file", "Full configuration file"), selected = "Full configuration file"
-        )),
+        tabPanel("Advanced",
+                 helpText('Here you can choose advanced options for the analysis.'),
+                 radioButtons(
+                   "configtype",
+                   label = "Configuration file type:",
+                   choices = list("Efficiency file", "Full configuration file"), selected = "Efficiency file"
+                 ),
+                 helpText('If every experimental data has the same number and order of samples, it is only necessary to provide a simple file with efficiencies in xlsx format.
+                          If the number and/or order of samples is different, full configuration file is required. It is also an xlsx file which contains:'),
+                 helpText('- efficiency values (sheet 1)'), 
+                 helpText('- gene names (sheet 2)'),
+                 helpText('- set number for each gene (sheet 3)'),
+                 helpText('- information about sample placement in each set (sheet 4, picture below).'),
+                 img(src = "conf.png", height = 300, width = 200)
+                 ),
         tabPanel("Results", tableOutput("tabelka")),
         tabPanel("Boxplots - samples", uiOutput("patplot"))
         )
