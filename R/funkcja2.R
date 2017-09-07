@@ -1,6 +1,6 @@
 funkcja2 <- function (x, y, z){
   
-  # Tworzymy macierz, gdzie ka?da cz. listy to 1 plik
+  # Tworzymy macierz, gdzie kazda cz. listy to 1 plik
   inFile <- x
   a = list()
   for (i in 1:length(x[, 1])){ 
@@ -10,19 +10,22 @@ funkcja2 <- function (x, y, z){
     a[[i]] <- a.temp[-c(1, (length(a.temp[, 1])-2):length(a.temp[, 1])), ]
   }
   
-  # Wydajno??
+  # Wydajnosc
   inFile2 <- y
-  plates <- read.xlsx(inFile2$datapath, header = T, 4)
+  plates <- try(read.xlsx(inFile2$datapath, header = T, 4))
+  if("try-error" %in% class(plates)) {
+      return ("This isn't a proper configuration file.")
+    }else{
   
   efficiency <- read.xlsx(inFile2$datapath, header = T, 1)
   eff <- efficiency[efficiency[, 1] %in% as.matrix(data.frame(strsplit(inFile$name, '_'))[1, ]), ]
   
-  # Creating a  matrix with all sample names for all sets based on the config file
+  # Creating a matrix with all sample names for all sets based on the config file
   
   set <- data.frame(read.xlsx(inFile2$datapath, header = T, 3))
   sets <- unique(set[efficiency[, 1] %in% as.matrix(data.frame(strsplit(inFile$name, '_'))[1, ]), 2])
   uniques <- unique(unlist(subset(plates, select=as.character(sets))))
-  uniques <- sort(uniques[is.finite(uniques)])
+  uniques <- sort(as.character(uniques[is.finite(uniques)]))
   
   # Slecting reference genes
 
@@ -166,13 +169,18 @@ funkcja2 <- function (x, y, z){
     Fd <- c('No reference genes')
   } else{
     Fd <- c('No genes for the analysys (all genes are reference genes)')
-
-
   }
+  
+  if ((NA %in% match(z, a.name)) == T) {
+    Fd <- c("Not all of the reference gene files are present!")
+  }
+  
 
+  
   return(Fd)
-         
+    }    
 }
+
 
 # Wczytanie danych
 # Zapytac, czy o to chodzi i o dane z roznymi nazwami probek (raczej nie bedzie)

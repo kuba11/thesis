@@ -36,9 +36,9 @@ funkcja1 <- function (x, y, z){
 
 ### Sprawdzanie, czy geny z pliku z wydajnoœciami pasuj¹ do nazw plików
 name_match <- match(a.name, eff[, 1])
-xxx = eff[,1]
 eff <- eff[name_match, ]
 eff <- eff[, 2]
+
 
 
 ### Sprawdzanie, czy s¹ geny referencyjne i zwyk³e
@@ -130,7 +130,10 @@ if (dim(refQ)[2] != dim(Q)[2]){
 
 }
 
-Fd <- as.data.frame(Fd)
+if ((NA %in% match(z, a.name)) == T) {
+  Fd <- c("Not all of the reference gene files are present!")
+}
+
 
   return(Fd)}
 #eff!!!

@@ -13,9 +13,14 @@ shinyServer(function(input, output) {
       return(NULL)
     
     inFile2 <- input$file2
-    selectizeInput("refergene",
-  label="Reference genes", choices=read.xlsx(inFile2$datapath, header = T, 1)[, 1], multiple=T)
     
+    tryCatch(
+    selectizeInput("refergene",
+  label="Reference genes", choices=read.xlsx(inFile2$datapath, header = T, 1)[, 1], multiple=T),
+  error = function(e) {print('Not a proper file with efficiencies!')}
+    )
+
+
     })
   
   
