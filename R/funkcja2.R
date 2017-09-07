@@ -41,7 +41,7 @@ funkcja2 <- function (x, y, z){
   gene_index <- c(1:length(a))
   a.name <- lapply(inFile$name, strsplit, '_')
   a.name <- unlist(lapply(a.name, function(l) l[[1]][1])) #Choosing firs element (gene name) from the lists
-  ref_index <- which(z == a.name)
+  ref_index <- which(a.name %in% z)
   ref_index <- ref_index[is.finite(ref_index)]
   gene_index <- gene_index[-ref_index]
   ref <- a[ref_index]
