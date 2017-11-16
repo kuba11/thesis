@@ -159,7 +159,8 @@ shinyServer(function(input, output) {
       d <- data.frame(x, y = y4)
       f=ggplot(d, aes(x=x,y = m)) + geom_bar(stat = "identity",  fill = heat.colors(length(x)-1))
       f+geom_errorbar(aes(ymax=m+y4, ymin=m), position="dodge")+
-        ggtitle("Bar and whisker plot of means and standard deviation") + ylab("Mean + standard deviation")
+        ggtitle("Bar and whisker plot of means and standard deviation") + ylab("Mean + standard deviation") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1))
       
       
     })
