@@ -31,9 +31,12 @@ shinyUI(fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Tool description", helpText("This is a tool which allows to perform a simple and quick Real-time PCR data analysis.
+        tabPanel("Tool description",
+helpText("This is a tool which allows to perform a simple and quick Real-time PCR data analysis.
                  It uses the Pfaffl method for quantification and the efficiency values from the experiment."),
-                 helpText("The following files are necessary:"),
+helpText("The scheme of the used algorithm can be seen below:"),                 
+img(src = "algorithm.png", height = 400, width = 450),
+helpText("The following files are necessary:"),
                  helpText("- the Real-time PCR data in SDS 2.3 format."),
                  img(src = "qPCR.png", height = 300, width = 450),
                  br(),

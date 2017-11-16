@@ -1,5 +1,6 @@
 library(shiny)
 library('xlsx')
+library('ggplot2')
 
 shinyServer(function(input, output) {
   source(paste(getwd(), 'R/funkcja1.R', sep = "/"))
@@ -40,7 +41,7 @@ shinyServer(function(input, output) {
       tryCatch(
         selectizeInput("control",
                        label="Control samples", choices = sample_list, multiple=T),
-        error = function(e) {print('Not a proper file with efficiencies!')}
+        error = function(e) {print('Error while listing samples from the experimental data. Please check the input files.')}
       )
     }else{
       
@@ -63,7 +64,7 @@ shinyServer(function(input, output) {
       tryCatch(
         selectizeInput("control",
                        label="Control samples", choices = sample_list, multiple=T),
-        error = function(e) {print('Not a proper file with efficiencies:2!')}
+        error = function(e) {print('Error while listing samples from the configuration file, please make sure it has the proper structure.')}
       )
     }
     
@@ -131,21 +132,45 @@ shinyServer(function(input, output) {
       y <- as.numeric(c(unlist(t(y))))
       x <- data.matrix(Fd()[, 1])
       x <- rep(x, each = dim(Fd())[2]-1)
-      
-      
-      
-      
-      boxplot(y ~ x, outline = F, main = c("Boxplot for all samples"))
+
+
+
+
+      boxplot(y ~ x, outline = F, main = c("Boxplot for all samples"), col = heat.colors(length(unique(x))))
       # plot(length(dim(y)), 1)
       #!!!wydajnosci
+
+      
+      })
+    
+    
+    ### Barplot for all samples
+    plot_output_3 <- renderPlot({
+      
+
+      y <- Fd()[, -c(1, dim(Fd())[1])]
+      y2 <- as.numeric(c(unlist(t(y))))
+      y2[y2>5] <- NA
+      y3 <- matrix(y2, nrow = dim(y)[1], ncol = dim(y)[2], byrow = T)
+      m <- apply(y3, 1, sd, na.rm = T)
+      y4 <- apply(y3, 1, mean, na.rm = T)
+      x <- data.matrix(Fd()[, 1])
+      
+      d <- data.frame(x, y = y4)
+      f=ggplot(d, aes(x=x,y = m)) + geom_bar(stat = "identity",  fill = heat.colors(length(x)-1))
+      f+geom_errorbar(aes(ymax=m+y4, ymin=m), position="dodge")+
+        ggtitle("Bar and whisker plot of means and standard deviation") + ylab("Mean + standard deviation")
+      
+      
     })
     
     
-    plot_output_list <- c(plot_output_2, plot_output_1)
+    
+    plot_output_list <- c(plot_output_2, plot_output_3, plot_output_1)
     do.call(tagList, plot_output_list)
 
    })
-
+    
     
 
     ### Results table
@@ -161,10 +186,10 @@ shinyServer(function(input, output) {
     ## Sample data
     output$downdata <- downloadHandler(
       filename = function() {
-        paste('ACTB_sample','txt', sep='.')
+        paste('sample_data','zip', sep='.')
       },
       content = function(file){
-        file.copy("www/ACTB_sample.txt", file)
+        file.copy("www/sample_data.zip", file)
       })
     
     ## Sample efficiency

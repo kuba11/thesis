@@ -9,18 +9,6 @@ ThermalCycleParams
 Sample Information
 
 Well	Sample Name	Detector Name	Reporter	Task	Ct	Quantity	Qty Mean	Qty StdDev	Ct Median	Ct Mean	Ct StdDev	Baseline Type	Baseline Start	Baseline Stop	Threshold Type	Threshold	FOS	HMD	LME	EW	BPR	NAW	HNS	HRN	EAF	BAF	TAF	CAF	
-55	121+122p1	Stanley	FAM	Unknown	24.405006							Automatic			Manual	0.1168													
-79	121+122p2	Stanley	FAM	Unknown	24.339392							Automatic			Manual	0.1168													
-103	124+125p1	Stanley	FAM	Unknown	24.523983							Automatic			Manual	0.1168													
-127	124+125p2	Stanley	FAM	Unknown	24.668818							Automatic			Manual	0.1168													
-151	127+128p1	Stanley	FAM	Unknown	24.580887							Automatic			Manual	0.1168													
-175	127+128p2	Stanley	FAM	Unknown	24.649263							Automatic			Manual	0.1168													
-102	14p1	Stanley	FAM	Unknown	24.853024							Automatic			Manual	0.1168													
-126	14p2	Stanley	FAM	Unknown	24.82741							Automatic			Manual	0.1168													
-54	16p1	Stanley	FAM	Unknown	24.724947							Automatic			Manual	0.1168													
-78	16p2	Stanley	FAM	Unknown	24.655375							Automatic			Manual	0.1168													
-6	18p1	Stanley	FAM	Unknown	24.806599							Automatic			Manual	0.1168													
-30	18p2	Stanley	FAM	Unknown	24.825857							Automatic			Manual	0.1168													
 246	32p1	Stanley	FAM	Unknown	23.23005							Automatic			Manual	0.1168													
 270	32p2	Stanley	FAM	Unknown	23.295902							Automatic			Manual	0.1168													
 198	34p1	Stanley	FAM	Unknown	23.326632							Automatic			Manual	0.1168													
