@@ -136,7 +136,7 @@ shinyServer(function(input, output) {
 
 
 
-      boxplot(y ~ x, outline = F, main = c("Boxplot for all samples"), col = heat.colors(length(unique(x))))
+      boxplot(y ~ x, outline = F, main = c("Normalized and callibrated realive expression value"), col = heat.colors(length(unique(x))), xlab = "Samples")
       # plot(length(dim(y)), 1)
       #!!!wydajnosci
 
@@ -158,9 +158,9 @@ shinyServer(function(input, output) {
       
       d <- data.frame(x, y = y4)
       f=ggplot(d, aes(x=x,y = m)) + geom_bar(stat = "identity",  fill = heat.colors(length(x)-1))
-      f+geom_errorbar(aes(ymax=m+y4, ymin=m), position="dodge")+
-        ggtitle("Bar and whisker plot of means and standard deviation") + ylab("Mean + standard deviation") +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+      f+geom_errorbar(aes(ymax=m+(y4)/2, ymin=m-(y4)/2), position="dodge")+
+        ggtitle("Normalized and callibrated realive expression value") + theme(plot.title = element_text(lineheight=.8, face="bold")) +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("Samples")
       
       
     })

@@ -16,7 +16,7 @@ shinyUI(fluidPage(
       fileInput("file1", label = "Choose the files", multiple =
                   T),
       
-      helpText("Step 4: Please select the control samples"),
+      helpText("Step 4: Please select the calibration samples"),
       uiOutput("control"),
       
       p("Step 5: Press this button to perform the analysis"),
