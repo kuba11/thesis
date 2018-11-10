@@ -33,7 +33,7 @@ funkcja2 <- function (x, y, z, control){
   # List of all samples that appear in the sets (that are corresponding to the genes loaded)
 
   uniques <- unique(unlist(subset(plates, select=as.character(sets))))
-  # Sortling sample names
+  # Sorting sample names
   uniques <- sort(as.character(uniques[is.finite(uniques)]))
   
   
@@ -67,7 +67,7 @@ funkcja2 <- function (x, y, z, control){
   ### Reference genes calculations
 
     ## dCt for reference genes
-    
+
     sample_no <- length(uniques)
 
     # Ct values for reference genes are matched to corresponding sample names
@@ -77,11 +77,13 @@ funkcja2 <- function (x, y, z, control){
     preQ <- refCt
     refnames <- refCt
 
+    test_index <- which(uniques %in% unique(ref[[1]][, 2]) & !uniques %in% control) # Getting column numbers to consider based on the first gene
+    
     for (i in 1:length(ref)){
-      refCt[i, ] <- as.numeric(as.character(ref[[i]][!as.character(ref[[i]][, 2]) %in% control, 6]))
+      refCt[i, ] <- as.numeric(as.character(ref[[i]][test_index, 6]))
       refCal <- mean(as.numeric(as.character(ref[[i]][as.character(ref[[i]][, 2]) %in% control, 6])), na.rm = T)
       refdCt[i, ] <- refCal - refCt[i, ]
-      refnames[i, ] <- ref[[i]][!as.character(ref[[i]][, 2]) %in% control, 2]
+      refnames[i, ] <- ref[[i]][test_index, 2]
     }
 
 
@@ -114,9 +116,9 @@ funkcja2 <- function (x, y, z, control){
     Cal <- c()
 
     for (i in 1:length(a)){
-      Ct[i, ] <- as.numeric(as.character(a[[i]][!as.character(a[[i]][, 2]) %in% control, 6]))
+      Ct[i, ] <- as.numeric(as.character(a[[i]][test_index, 6]))
       Cal[i] <- mean(as.numeric(as.character(a[[i]][as.character(a[[i]][, 2]) %in% control, 6])), na.rm = T)
-      samnames[i, ] <- a[[i]][!as.character(a[[i]][, 2]) %in% control, 2]
+      samnames[i, ] <- a[[i]][test_index, 2]
       }
     dCt <- Cal - Ct
 
@@ -129,44 +131,44 @@ funkcja2 <- function (x, y, z, control){
 
 
 
-    ### Fold difference
+### Fold difference
 
-    Fd <- data.frame(matrix(ncol = length(gene_index), nrow = length(uniques[!uniques %in% control]))) #Tu bylo sample_no
-    rownames(Fd) <- uniques[!uniques %in% control]
-    x <- matrix()
+Fd <- data.frame(matrix(ncol = length(gene_index), nrow = length(uniques[!uniques %in% control]))) #Tu bylo sample_no
+rownames(Fd) <- uniques[!uniques %in% control]
+x <- matrix()
 
-    for (i in 1:length(gene_index)){
-      for (j in 1:length(uniques[!uniques %in% control])){
+for (i in 1:length(gene_index)){
+  for (j in 1:length(uniques[!uniques %in% control])){
 
-        ## We match data to corresponding names
-        ## Each data matrix has corresponding matrix with their corresponding sample names
-        x <- which(rownames(Fd)[j] == samnames[i, ], arr.ind = T)
-        if (length(x) > 0){
-        Fd[j, i] <- Q[i, x[, 2]]
-        }else{
-        Fd[j, i] <- NA
-        }
-        ###???!!!
-        Fd[j, i] <- Fd[j, i]/refQ[which(rownames(Fd)[j] == colnames(refQ))] #?le, trzeba dopasowa? pr?bki z gen?w do ref.
-      }
+    ## We match data to corresponding names
+    ## Each data matrix has corresponding matrix with their corresponding sample names
+    x <- which(rownames(Fd)[j] == samnames[i, ], arr.ind = T)
+    if (length(x) > 0){
+    Fd[j, i] <- Q[i, x[, 2]]
+    }else{
+    Fd[j, i] <- NA
     }
+    ###???!!!
+    Fd[j, i] <- Fd[j, i]/refQ[which(rownames(Fd)[j] == colnames(refQ))] #?le, trzeba dopasowa? pr?bki z gen?w do ref.
+  }
+}
 
-    Fd <- cbind(uniques[!uniques %in% control], Fd)
+Fd <- cbind(uniques[!uniques %in% control], Fd)
 
 
-    ## Row and column names
-      k <- 1
-      columns <- c()
+## Row and column names
+  k <- 1
+  columns <- c()
 
-      for (i in gene_index){
-        columns[k] <- strsplit(file1.name[i], '_')[[1]][1]
-        k <- k + 1
+  for (i in gene_index){
+    columns[k] <- strsplit(file1.name[i], '_')[[1]][1]
+    k <- k + 1
 
-        Fd[is.na(Fd)] <- c('No data')
-      }
-      # Adding geometric average vals (ref genes) to the results
-      Fd <- cbind(Fd, t(refQ))
-      colnames(Fd) <- c('Sample Name', columns, "geNorm")
+    Fd[is.na(Fd)] <- c('No data')
+  }
+  # Adding geometric average vals (ref genes) to the results
+  Fd <- cbind(Fd, t(refQ))
+  colnames(Fd) <- c('Sample Name', columns, "geNorm")
 
 
   } else if ( length(ref) == 0) {

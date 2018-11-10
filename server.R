@@ -6,7 +6,7 @@ shinyServer(function(input, output) {
   source(paste(getwd(), 'R/funkcja1.R', sep = "/"))
   source(paste(getwd(), 'R/funkcja2.R', sep = "/"))
 
-
+####### 1. DATA INPUT ---------------------------------------------------------------------------- 
   ## Choosing the reference genes
   output$refgen<-renderUI({
     
@@ -73,7 +73,8 @@ shinyServer(function(input, output) {
   })
   
   
-  #Obliczanie Fold difference
+####### 2.CALCULATIONS------------------------------------------------------------------------
+  
   Fd <- reactive({
     
     if(!is.null(input$control)){
@@ -91,27 +92,27 @@ shinyServer(function(input, output) {
     Fd
     })
 
-  #Macierz wynikowa
+  #Output matrix
   output$tabelka <- renderTable({
     
     if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0)
       return(NULL)
-    
+
+    #showNotification(paste('', dim(Fd())), duration = NULL)
     Fd()
     
   })
 
 
-#Boxplots for samples
+####### 3. GRAPHICAL RESULTS
+  
+### Plots for samples
     output$patplot <- renderUI({
       
       if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) |  is.null(input$control) | input$act == 0 | length(dim(Fd())) == 0)
         return(NULL)
-    
-      
-      
-      
-### Single boxplots
+
+  ##### 3.1 Single boxplots
     plot_output_1 <- lapply(1:dim(Fd())[1], function(i) {
   output[[paste0('b', i)]] <- renderPlot({
 
@@ -125,7 +126,7 @@ shinyServer(function(input, output) {
 
   })
 })
-    ### First plot for all samples
+  ##### 3.2 First plot for all samples
     plot_output_2 <- renderPlot({
       
       y <- Fd()[, -c(1, dim(Fd())[1])]
@@ -135,8 +136,8 @@ shinyServer(function(input, output) {
 
 
 
-
-      boxplot(y ~ x, outline = F, main = c("Normalized and callibrated realive expression value"), col = heat.colors(length(unique(x))), xlab = "Samples")
+      # showNotification(paste('1', length(y)), duration = NULL)
+      boxplot(y ~ x, outline = F, main = c("Normalized and callibrated relative expression value"), col = heat.colors(length(unique(x))), xlab = "Samples")
       # plot(length(dim(y)), 1)
       #!!!wydajnosci
 
@@ -144,30 +145,32 @@ shinyServer(function(input, output) {
       })
     
     
-    ### Barplot for all samples
+  ##### 3.3 Barplot for all samples
     plot_output_3 <- renderPlot({
       
 
       y <- Fd()[, -c(1, dim(Fd())[1])]
       y2 <- as.numeric(c(unlist(t(y))))
-      y2[y2>5] <- NA
+      #y2[y2>5] <- NA
       y3 <- matrix(y2, nrow = dim(y)[1], ncol = dim(y)[2], byrow = T)
       m <- apply(y3, 1, sd, na.rm = T)
       y4 <- apply(y3, 1, mean, na.rm = T)
       x <- data.matrix(Fd()[, 1])
-      
+
       d <- data.frame(x, y = y4)
+      #showNotification(paste('', length(f)), duration = NULL)
+      
       f=ggplot(d, aes(x=x,y = m)) + geom_bar(stat = "identity",  fill = heat.colors(length(x)-1))
       f+geom_errorbar(aes(ymax=m+(y4)/2, ymin=m-(y4)/2), position="dodge")+
-        ggtitle("Normalized and callibrated realive expression value") + theme(plot.title = element_text(lineheight=.8, face="bold")) +
+        ggtitle("Normalized and callibrated relative expression value") + theme(plot.title = element_text(lineheight=.8, face="bold")) +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("Samples")
-      
-      
+      #plot(y4)
     })
     
     
+    ### Merging all plots into one object to display on the page
     
-    plot_output_list <- c(plot_output_2, plot_output_3, plot_output_1)
+    plot_output_list <- c(plot_output_2, plot_output_3, plot_output_1[[1]])
     do.call(tagList, plot_output_list)
 
    })

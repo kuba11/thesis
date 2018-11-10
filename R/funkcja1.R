@@ -51,7 +51,7 @@ eff <- eff[, 2]
 ### Reference genes calculations
     
   ## dCt for reference genes
-  sample_no <- length(ref[[1]][, 1])
+  sample_no <- length(unique(ref[[1]][, 2]))
   refCt <- data.frame(matrix(nrow = length(ref), ncol = (sample_no - length(control))))
   refdCt <- refCt
   preQ <- refCt

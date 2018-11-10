@@ -74,6 +74,15 @@ helpText("The following files are necessary:"),
                  downloadButton("downeffe","Download an empty efficiency file"),
                  br()
                  ),
+
+        tabPanel("Raw fluorescence data",
+         helpText('If you have the raw fluorescence values for the samples, you can upload them in the "Step 3" to create the models and retreive the Ct values.'),
+              checkboxInput("fluo.file", "Use raw fluorescence data", value = FALSE, width = NULL),
+         #img(src = "eff.png", height = 210, width = 120),
+         br(),
+         downloadButton("downfluo","Download a sample raw fluorescence file"),
+         br()
+         ),
         tabPanel("Results", tableOutput("tabelka")),
         tabPanel("Boxplots - samples", uiOutput("patplot"))
         )
