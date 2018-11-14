@@ -84,7 +84,7 @@ helpText("The following files are necessary:"),
          br()
          ),
         tabPanel("Results", tableOutput("tabelka")),
-        tabPanel("Boxplots - samples", uiOutput("patplot"))
+        tabPanel("Plots", uiOutput("patplot"))
         )
       
 

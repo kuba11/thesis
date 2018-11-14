@@ -1,17 +1,26 @@
-funkcja1 <- function (x, y, z, control){
-    
-  ## Removing '.txt' from the file names
+funkcja1 <- function (x, y, z, control, fluo){
+  
+####### 1. File loading ---------------------------------------------------------------
+  
   inFile <- x
+  ## Removing '.txt' from the file names
   file1.name <- as.matrix(data.frame(strsplit(inFile$name, '[.]'))[1, ])
   
+  ##### 1.1 Raw fluorescence files
+  if(fluo == T){
+    a <- fluorescence1(x)
+    
+  }else{
+  ##### 1.2 Processed data (with Ct values)
   ### Creating a list of matrices for each file
   
   a = list()
-  for (i in 1:length(x[, 1])){ 
+  for (i in 1:length(inFile[, 1])){ 
     a.temp <- read.table(inFile$datapath[i], sep = '\t', col.names = rep('a', 29), fill = T)
-    a.temp <- a.temp[which(a.temp[, 1] == "Well"): which(a.temp[, 1] == "Slope"), 1:6]
+    a.temp <- a.temp[which(a.temp[, 1] == "Well"): which(a.temp[, 1] == "Slope"), c(2, 6)]
     colnames(a.temp) <- as.character(unlist(a.temp[1,]))
     a[[i]] <- a.temp[-c(1, length(a.temp[, 1])), ]
+  }
   }
   
   ### Getting the efficiency from the file
@@ -19,6 +28,10 @@ funkcja1 <- function (x, y, z, control){
   efficiency <- read.xlsx(inFile2$datapath, header = T, 1)
   eff <- efficiency[efficiency[, 1] %in% as.matrix(data.frame(strsplit(file1.name, '_'))[1, ]), ]###!!!!!!!!!!!!!!!!!!!
   
+  
+  
+  
+####### 2. Separating samples into reference and test ---------------------------------
   ### Reference gene selection
   k = 1  
   ref <- list()
@@ -45,11 +58,13 @@ eff <- eff[, 2]
 
 
 
+
+####### 3. Calculation of Fold difference -------------------------------------------------------
+
 ### Checking, if normal and reference genes are present
   if (length(ref) > 0 & length(a) > 0){
 
-### Reference genes calculations
-    
+  ##### 3.1 Reference genes calculations
   ## dCt for reference genes
   sample_no <- length(unique(ref[[1]][, 2]))
   refCt <- data.frame(matrix(nrow = length(ref), ncol = (sample_no - length(control))))
@@ -58,8 +73,8 @@ eff <- eff[, 2]
   refQ <- data.frame(matrix(nrow = 1, ncol = (sample_no - length(control))))
 
   for (i in 1:length(ref)){
-    refCt[i, ] <- as.numeric(as.character(ref[[i]][!as.character(ref[[i]][, 2]) %in% control, 6]))
-    refCal <- mean(as.numeric(as.character(ref[[i]][as.character(ref[[i]][, 2]) %in% control, 6])), na.rm = T)
+    refCt[i, ] <- as.numeric(as.character(ref[[i]][!as.character(ref[[i]][, 1]) %in% control, 2]))
+    refCal <- mean(as.numeric(as.character(ref[[i]][as.character(ref[[i]][, 1]) %in% control, 2])), na.rm = T)
     refdCt[i, ] <- refCal - refCt[i, ]
   }
 
@@ -75,7 +90,7 @@ eff <- eff[, 2]
   }
 
 
-### Normal genes calculations
+  ##### 3.2 Normal genes calculations
 
   ## Calculating dCt
   Ct <- data.frame(matrix(nrow = length(a), ncol = (sample_no - length(control))))
@@ -83,8 +98,8 @@ eff <- eff[, 2]
   Cal <- c()
 
   for (i in 1:length(a)){
-    Ct[i, ] <- as.numeric(as.character(a[[i]][!as.character(a[[i]][, 2]) %in% control, 6]))
-    Cal[i] <- mean(as.numeric(as.character(a[[i]][as.character(a[[i]][, 2]) %in% control, 6])), na.rm = T)
+    Ct[i, ] <- as.numeric(as.character(a[[i]][!as.character(a[[i]][, 1]) %in% control, 2]))
+    Cal[i] <- mean(as.numeric(as.character(a[[i]][as.character(a[[i]][, 1]) %in% control, 2])), na.rm = T)
   }
     dCt <- Cal - Ct
 
@@ -94,7 +109,7 @@ eff <- eff[, 2]
   }
 
 
-### Fold difference
+  ##### 3.3 Fold difference
 
 Fd <- data.frame(matrix(nrow = length(gene_index), ncol = (sample_no - length(control))))
 
@@ -110,7 +125,7 @@ if (dim(refQ)[2] != dim(Q)[2]){
 
 
     ## Row and column names
-    Fd <- cbind(as.character(a[[1]][!as.character(a[[1]][, 2]) %in% control, 2]), Fd)
+    Fd <- cbind(as.character(a[[1]][!as.character(a[[1]][, 1]) %in% control, 1]), Fd)
     k <- 1
     columns <- c()
 
@@ -120,10 +135,10 @@ if (dim(refQ)[2] != dim(Q)[2]){
 
     Fd[is.na(Fd)] <- c('No data')
     }
-    
-    # Adding reference genes' geometric mean values 
+
+    # Adding reference genes' geometric mean values
     Fd <- cbind(Fd, t(refQ))
-    
+
     colnames(Fd) <- c('Sample Name', columns, "geNorm")
 }
 
@@ -131,7 +146,7 @@ if (dim(refQ)[2] != dim(Q)[2]){
     Fd <- c("No reference genes. The name of the reference gene chosen doesn't match the first part of any filename.")
   } else {
     Fd <- c('No genes for the analysys (all genes are reference genes)')
-  } 
+  }
 
 
 
