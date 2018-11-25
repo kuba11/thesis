@@ -89,11 +89,11 @@ shinyServer(function(input, output) {
     if (input$eff.file == T){
       
       # Inputs: Input files(raw or ct), configuration file, reference gene names, control sample names, is it raw fluorescence data? [T/F]
-    Fd <- funkcja1(input$file1, input$file2, input$refergene, input$control, input$fluo.file)
+    Fd <- funkcja1(input$file1, input$file2, input$refergene, input$control, input$fluo.file, input$fluo.thresh, input$fluo.cols)
     
     }else{
         
-        Fd <- funkcja2(input$file1, input$file2, input$refergene, input$control, input$fluo.file)
+        Fd <- funkcja2(input$file1, input$file2, input$refergene, input$control, input$fluo.file, input$fluo.thresh, input$fluo.cols)
       }
     }else{Fd <- c("No control samples were chosen!")}
     
@@ -103,12 +103,17 @@ shinyServer(function(input, output) {
   #Output matrix
   output$tabelka <- renderTable({
     
-    if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) | input$act == 0)
-      return(NULL)
+    if(input$act == 0){
+      mes <- data.frame("Please upload the files, make relevant selections and press the 'ANALYSE' button")
+      colnames(mes) <- 'Information'
+      return(mes)
+    }else {
 
-    #showNotification(paste('', dim(Fd())), duration = NULL)
-    Fd()
-    
+      if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) )
+        return('One of the input files or information is missing!')
+
+      Fd()
+    }
   })
 
 
@@ -137,10 +142,10 @@ shinyServer(function(input, output) {
   ##### 3.2 First plot for all samples
     plot_output_2 <- renderPlot({
       
-      y <- Fd()[, -c(1, dim(Fd())[1])]
+      y <- Fd()[, -c(1, dim(Fd())[2])]
       y <- as.numeric(c(unlist(t(y))))
       x <- data.matrix(Fd()[, 1])
-      x <- rep(x, each = dim(Fd())[2]-1)
+      x <- rep(x, each = dim(Fd())[2]-2)
 
 
 
@@ -159,31 +164,23 @@ shinyServer(function(input, output) {
 
       y <- Fd()[, -c(1, dim(Fd())[1])]
       y2 <- as.numeric(c(unlist(t(y))))
-      #y2[y2>5] <- NA
       y3 <- matrix(y2, nrow = dim(y)[1], ncol = dim(y)[2], byrow = T)
-      m <- apply(y3, 1, sd, na.rm = T)
-      y4 <- apply(y3, 1, mean, na.rm = T)
-      x <- data.matrix(Fd()[, 1])
+      sd <- apply(y3, 1, sd, na.rm = T)
+      mean <- apply(y3, 1, mean, na.rm = T)
+      sample_names <- data.matrix(Fd()[, 1])
+      #showNotification(paste('', mean[18], mean[19], mean[20], sep = ' '), duration = NULL)
 
-      d <- data.frame(x, y = y4)
-      names(y4) <- x
-      # NAs <- c(rowSums(is.na(d)))
-      # 
-      # showNotification(paste('', NAs), duration = NULL)
-      # 
-      # f=ggplot(d, aes(x = x, y = m, fill = heat.colors(length(x)) ) + geom_bar(stat = "identity"))
-      # f+geom_errorbar(aes(ymax=m+(y4)/2, ymin=m-(y4)/2), position="dodge")+
-      #   ggtitle("Barplot - Normalized and callibrated relative expression value") + theme(plot.title = element_text(lineheight=.8, face="bold")) +
-      #   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + xlab("Samples")
-      #plot(d)
-      barCenters <- barplot(y4, col = heat.colors(length(x)), las = 2, ylim = c(0, max(y4 + m/2, na.rm = T)),
+      names(mean) <- sample_names#[is.finite(mean)]
+      mean <- mean[is.finite(mean)]
+      
+      barCenters <- barplot(mean, col = heat.colors(length(sample_names)), las = 2, ylim = c(0, max(mean + sd/2, na.rm = T)),
                             main = "Barplot - Normalized and callibrated relative expression value", ylab = 'Fold difference')
-      
-      segments(barCenters, y4 - m/2, barCenters,
-               y4 + m/2, lwd = 1.5)
-      
-      arrows(barCenters, y4 - m/2, barCenters,
-             y4 + m/2, lwd = 1.5, angle = 90,
+
+      segments(barCenters, mean - sd/2, barCenters,
+               mean + sd/2, lwd = 1.5)
+
+      arrows(barCenters, mean - sd/2, barCenters,
+             mean + sd/2, lwd = 1.5, angle = 90,
              code = 3, length = 0.05)
     })
     
@@ -201,7 +198,7 @@ shinyServer(function(input, output) {
   
     output$down <- downloadHandler(
       filename=function() {
-      paste('wynik','.xlsx', sep='')
+      paste('Results','.xlsx', sep='')
     },
     content = function(file){
       write.xlsx(Fd(), file, row.names = F)
@@ -209,7 +206,7 @@ shinyServer(function(input, output) {
     
 ####### 5. SAMPLE FILES ---------------------------------------------------------------------
    
-    ## Sample data
+    ## Sample data (Ct)
     output$downdata <- downloadHandler(
       filename = function() {
         paste('sample_data','zip', sep='.')
@@ -217,6 +214,15 @@ shinyServer(function(input, output) {
       content = function(file){
         file.copy("www/sample_data.zip", file)
       })
+  
+  ## Sample fluorescence data
+  output$downfluo <- downloadHandler(
+    filename = function() {
+      paste('fluo_data','zip', sep='.')
+    },
+    content = function(file){
+      file.copy("www/fluo_data.zip", file)
+    })
     
     ## Sample efficiency
     output$downeff <- downloadHandler(

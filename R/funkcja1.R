@@ -1,4 +1,4 @@
-funkcja1 <- function (x, y, z, control, fluo){
+funkcja1 <- function (x, y, z, control, fluo, thresh = 1, cols = 1){
   
 ####### 1. File loading ---------------------------------------------------------------
   
@@ -8,7 +8,7 @@ funkcja1 <- function (x, y, z, control, fluo){
   
   ##### 1.1 Raw fluorescence files
   if(fluo == T){
-    a <- fluorescence1(x)
+    a <- fluorescence1(x, thresh, cols + 1)
     
   }else{
   ##### 1.2 Processed data (with Ct values)
@@ -27,23 +27,22 @@ funkcja1 <- function (x, y, z, control, fluo){
   inFile2 <- y
   efficiency <- read.xlsx(inFile2$datapath, header = T, 1)
   eff <- efficiency[efficiency[, 1] %in% as.matrix(data.frame(strsplit(file1.name, '_'))[1, ]), ]###!!!!!!!!!!!!!!!!!!!
-  
-  
-  
-  
+
+
+
 ####### 2. Separating samples into reference and test ---------------------------------
   ### Reference gene selection
-  k = 1  
+  k = 1
   ref <- list()
   j <- 1
   liczba_usuniec <- 0
   ref_index <- c()
-  
+
   # Creating an index for normal genes
   gene_index <- c(1:length(a))
   a.name <- lapply(file1.name, strsplit, '_')
   # Choosing first element (gene name) from the lists
-  a.name <- unlist(lapply(a.name, function(l) l[[1]][1])) 
+  a.name <- unlist(lapply(a.name, function(l) l[[1]][1]))
   ref_index <- which(a.name %in% z)
   ref_index <- ref_index[is.finite(ref_index)]
   gene_index <- gene_index[-ref_index]
@@ -96,10 +95,12 @@ eff <- eff[, 2]
   Ct <- data.frame(matrix(nrow = length(a), ncol = (sample_no - length(control))))
   Q <- Ct
   Cal <- c()
+  xx <- list()
 
   for (i in 1:length(a)){
     Ct[i, ] <- as.numeric(as.character(a[[i]][!as.character(a[[i]][, 1]) %in% control, 2]))
     Cal[i] <- mean(as.numeric(as.character(a[[i]][as.character(a[[i]][, 1]) %in% control, 2])), na.rm = T)
+  #  xx[[i]] <- as.character(a[[i]][, 1])
   }
     dCt <- Cal - Ct
 

@@ -76,12 +76,17 @@ helpText("The following files are necessary:"),
                  ),
 
         tabPanel("Raw fluorescence data",
-         helpText('If you have the raw fluorescence values for the samples, you can upload them in the "Step 3" to create the models and retreive the Ct values.'),
+         helpText("Raw fluorescence values from the real-time PCR experiment can be used to create a regression function model that allow to determine precise Ct values.
+                  If you don't have the files with Ct values or you wish to calculate it from the models, you can chack the box below upload the raw fluorescence files in the 'Step 3'."),
               checkboxInput("fluo.file", "Use raw fluorescence data", value = FALSE, width = NULL),
-         #img(src = "eff.png", height = 210, width = 120),
+         helpText("Please select the threshold value of fluorescence that will be used used to determine the threshold cycle (Ct)."),
+         numericInput('fluo.thresh', 'Fluorescence threshold', 0.5, min = 0, step = 0.1, max = 3),
+         helpText("Please indicate the number of cycles/columns in the file."),
+         numericInput('fluo.cols', 'Column number', 40, min = 0, max = 100, step = 1),
          br(),
-         downloadButton("downfluo","Download a sample raw fluorescence file"),
-         br()
+         downloadButton("downfluo","Download sample raw fluorescence data"),
+         br(),
+         helpText("Please note that if you do provide a simple efficiency file, the well numbers will be used as the sample names - if they do not match between the files, this will cause errors and the analysis will fail.")
          ),
         tabPanel("Results", tableOutput("tabelka")),
         tabPanel("Plots", uiOutput("patplot"))

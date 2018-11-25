@@ -1,17 +1,18 @@
-fluorescence1 <- function (inFile, threshold = 0.5){
+fluorescence1 <- function (inFile, threshold = 0.5, columns = 40){
   
   a <- list()
   for (i in 1:length(inFile[, 1])){
 
   data <- read.table(inFile$datapath[i], header = F, skip = 2, sep = "\t")
+  names <- data[, 1]
   data <- data[, -c(1:3)]
-  data <- t(data[, 1:40])
-  data <- cbind(1:40, data)
+  data <- t(data[, 1:columns])
+  data <- cbind(1:columns, data)
   data <- data.frame(data)
 
   # backsub - background substraction. More: https://www.rdocumentation.org/packages/qpcR/versions/1.3-1/topics/pcrbatch
 
-  mode=modlist(data, cyc = 1, fluo = 2:40, model = l4)
+  mode=modlist(data, cyc = 1, fluo = 2:dim(data)[2], model = l4)
   # model=pcrbatch(mode, plot=F) # Model is only here to check, if fitting failed
   # 
   # # Fitting model for not fitted stuff
@@ -31,7 +32,8 @@ fluorescence1 <- function (inFile, threshold = 0.5){
   unlist(predict(mode[[x]], newdata = data.frame(Fluo = threshold), which = "x"))}))
   
   # Adding data with Ct values to the list
-  a[[i]] <- data.frame(cbind(data[, 1], Ct))
+  a[[i]] <- data.frame(names = names, Ct = Ct)
+  a[[i]] <- a[[i]][order(a[[i]][, 1]), ]
   }
   return(a)
 }

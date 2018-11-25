@@ -1,4 +1,4 @@
-fluorescence2 <- function (inFile, inFile2, genes, threshold = 0.5){
+fluorescence2 <- function (inFile, inFile2, genes, threshold = 0.5, columns = 40){
   
   a <- list()
   plates <- data.frame(read.xlsx(inFile2$datapath, header = T, 3))
@@ -10,15 +10,15 @@ fluorescence2 <- function (inFile, inFile2, genes, threshold = 0.5){
   data <- read.table(inFile$datapath[i], header = F, skip = 2, sep = "\t")
   names <- as.character(as.integer(data[, 1]))
   data <- data[, -c(1:3)]
-  data <- t(data[, 1:40])
-  data <- cbind(1:40, data)
+  data <- t(data[, 1:columns])
+  data <- cbind(1:columns, data)
   data <- data.frame(data)
   colnames(data) <- c('Cycle', names)
   
   # Changing well numbers to sample names
 
-  sam_nam <- sapply(1:length(data[, 1]), function(j){ sample[data[, j], as.character(plates[genes[i], 2])]})
-  #mode=modlist(data, cyc = 1, fluo = 2:40, model = l4)
+  sam_nam <- sample[match(colnames(data)[-1], sample[, 1]), as.character(plates[match(genes[i], plates[, 1]), 2])]
+  mode=modlist(data, cyc = 1, fluo = 2:dim(data)[2], model = l4)
   # model=pcrbatch(mode, plot=F) # Model is only here to check, if fitting failed
   # 
   # # Fitting model for not fitted stuff
@@ -34,17 +34,16 @@ fluorescence2 <- function (inFile, inFile2, genes, threshold = 0.5){
   # }
 
   # Selecting fluorescence threshold to determine Ct value
-  # Ct = unlist(lapply(1:length(mode), function(x){
-  # unlist(predict(mode[[x]], newdata = data.frame(Fluo = threshold), which = "x"))}))
-  # 
-  # # Adding data with Ct values to the list
-  # a[[i]] <- data.frame(cbind(sam_nam, Ct))
+  Ct = unlist(lapply(1:length(mode), function(x){
+  unlist(predict(mode[[x]], newdata = data.frame(Fluo = threshold), which = "x"))}))
+
+  # Adding data with Ct values to the list
+  a[[i]] <- data.frame(sam_nam = sam_nam, Ct = Ct)
+  a[[i]] <- a[[i]][order(a[[i]][, 1]), ]
   }
-  x=sapply(2:length(data[1, ]), function(j){ sample[colnames(data)[j] == sample[, 1], 1]})
-  y=match(colnames(data), sample[, 1])
-  #sample[y, 1]
-  
-  return(genes %in% plates[, 1])
+
+  return(a)
+
 }
 # 
 # #data
