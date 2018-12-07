@@ -104,7 +104,7 @@ shinyServer(function(input, output) {
   output$tabelka <- renderTable({
     
     if(input$act == 0){
-      mes <- data.frame("Please upload the files, make relevant selections and press the 'ANALYSE' button")
+      mes <- data.frame("Please upload the files, make relevant selections and press the 'ANALYSE' button.")
       colnames(mes) <- 'Information'
       return(mes)
     }else {

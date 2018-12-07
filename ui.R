@@ -32,8 +32,8 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Tool description",
-helpText("This is a tool which allows to perform a simple and quick Real-time PCR data analysis.
-                 It uses the Pfaffl method for quantification and the efficiency values from the experiment."),
+helpText("Simple qPCR is a tool which allows to perform a simple and quick Real-time PCR data analysis.
+                 It uses relative quantification method utilising the Pfaffl model and efficiency values from the experiment."),
 helpText("The scheme of the used algorithm can be seen below:"),                 
 img(src = "algorithm.png", height = 400, width = 450),
 helpText("The following files are necessary:"),
@@ -52,6 +52,8 @@ helpText("The following files are necessary:"),
                  downloadButton("downconf","Download a sample configuration file"),
                  downloadButton("downconfe","Download an empty configuration file"),
                  helpText("If all of your files have the same samples in the same order, you can provide a simple file with efficiencies instead. Check the 'Efficiency' tab for more info."),
+                 br(),
+                 helpText("You can also model the fluorescence curve and calculate the Ct value based on the raw fluorescence data. Check the 'Raw fluorescence data' tab for more info."),
                  br(),
                  helpText("The file names of the data must have the following format: gene_other"),
                  helpText("Where:"),
@@ -82,7 +84,7 @@ helpText("The following files are necessary:"),
          helpText("Please select the threshold value of fluorescence that will be used used to determine the threshold cycle (Ct)."),
          numericInput('fluo.thresh', 'Fluorescence threshold', 0.5, min = 0, step = 0.1, max = 3),
          helpText("Please indicate the number of cycles/columns in the file."),
-         numericInput('fluo.cols', 'Column number', 40, min = 0, max = 100, step = 1),
+         numericInput('fluo.cols', 'Number of columns', 40, min = 0, max = 100, step = 1),
          br(),
          downloadButton("downfluo","Download sample raw fluorescence data"),
          br(),
