@@ -1,14 +1,15 @@
-funkcja1 <- function (x, y, z, control, fluo, thresh = 1, cols = 1){
+funkcja1 <- function (x, y, z, control, fluo, fluo_data = NA){
+  # x- Configuration file, y - Test data, z - chosen control samples
   
 ####### 1. File loading ---------------------------------------------------------------
   
-  inFile <- x
+  inFile <- x 
   ## Removing '.txt' from the file names
   file1.name <- as.matrix(data.frame(strsplit(inFile$name, '[.]'))[1, ])
   
   ##### 1.1 Raw fluorescence files
   if(fluo == T){
-    a <- fluorescence1(x, thresh, cols + 1)
+    a <- fluo_data
     
   }else{
   ##### 1.2 Processed data (with Ct values)
@@ -24,7 +25,7 @@ funkcja1 <- function (x, y, z, control, fluo, thresh = 1, cols = 1){
   }
   
   ### Getting the efficiency from the file
-  inFile2 <- y
+  inFile2 <- y 
   efficiency <- read.xlsx(inFile2$datapath, header = T, 1)
   eff <- efficiency[efficiency[, 1] %in% as.matrix(data.frame(strsplit(file1.name, '_'))[1, ]), ]###!!!!!!!!!!!!!!!!!!!
 

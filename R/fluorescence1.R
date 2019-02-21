@@ -13,7 +13,7 @@ fluorescence1 <- function (inFile, threshold = 0.5, columns = 40){
   # backsub - background substraction. More: https://www.rdocumentation.org/packages/qpcR/versions/1.3-1/topics/pcrbatch
 
   mode=modlist(data, cyc = 1, fluo = 2:dim(data)[2], model = l4)
-  # model=pcrbatch(mode, plot=F) # Model is only here to check, if fitting failed
+  model=pcrbatch(mode, plot=F) # Model is only here to check, if fitting failed
   # 
   # # Fitting model for not fitted stuff
   # not_fitted=grep("\\*",names(model[-1]),perl=T)
@@ -28,11 +28,27 @@ fluorescence1 <- function (inFile, threshold = 0.5, columns = 40){
   # }
 
   # Selecting fluorescence threshold to determine Ct value
-  Ct = unlist(lapply(1:length(mode), function(x){
-  unlist(predict(mode[[x]], newdata = data.frame(Fluo = threshold), which = "x"))}))
+  Ct <- c()
+  for(x in 1:length(mode)){
+    if(length(mode[[x]]) == 15) #if = 15 then ok, if 4 then modeling failed
+      Ct <- c(Ct, predict(mode[[x]], newdata = data.frame(Fluo = 0.5), which = "x"))
+    else
+      Ct <- c(Ct, 'None')
+    
+    #cat(unlist(Ct))
+  }
   
+  # R squared of the fitted models
+  R_squared <- unlist(model[5, -c(1)])
+  
+  # Modelling results
+  Modeling_result <- rep('ok', length(mode))
+  Modeling_result[grep("\\*",names(model[-1]),perl=T)] <- 'Fitting failed'
+  Modeling_result[grep("\\*\\*",names(model[-1]),perl=T)] <- 'Lack of sigmoidal structure'
+  
+
   # Adding data with Ct values to the list
-  a[[i]] <- data.frame(names = names, Ct = Ct)
+  a[[i]] <- data.frame(sample = names, Ct = unlist(Ct), R_squared = R_squared, Modeling_result = Modeling_result)
   a[[i]] <- a[[i]][order(a[[i]][, 1]), ]
   }
   return(a)

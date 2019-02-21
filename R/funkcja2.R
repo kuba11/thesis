@@ -1,4 +1,5 @@
 funkcja2 <- function (x, y, z, control, fluo, thresh = 1, cols = 1){
+  # x- Configuration file, y - Test data, z - chosen control samples
   
 ####### 1. File loading ---------------------------------------------------------------
   

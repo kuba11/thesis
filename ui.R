@@ -88,7 +88,13 @@ helpText("The following files are necessary:"),
          br(),
          downloadButton("downfluo","Download sample raw fluorescence data"),
          br(),
-         helpText("Please note that if you do provide a simple efficiency file, the well numbers will be used as the sample names - if they do not match between the files, this will cause errors and the analysis will fail.")
+         helpText("Please note that if you do provide a simple efficiency file, the well numbers will be used as the sample names - if they do not match between the files, this will cause errors and the analysis will fail."),
+         br(),
+         checkboxInput("fluodetail", "See modelling results in detail (Warning: analysis may be very long)", value = F, width = NULL),
+         br(),
+         conditionalPanel("input.fluodetail == 1 & input.act == 1", uiOutput("fluo_gene")),
+         br(),
+         conditionalPanel("input.fluodetail == 1 & input.act == 1", DT::dataTableOutput("fluo_tab"))
          ),
         tabPanel("Results", tableOutput("tabelka")),
         tabPanel("Plots", uiOutput("patplot"))

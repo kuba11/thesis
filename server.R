@@ -2,6 +2,7 @@ library(shiny)
 library('xlsx')
 library('ggplot2')
 library(qpcR)
+library(DT)
 
 shinyServer(function(input, output) {
   source(paste(getwd(), 'R/funkcja1.R', sep = "/"))
@@ -10,7 +11,7 @@ shinyServer(function(input, output) {
   source(paste(getwd(), 'R/fluorescence2.R', sep = "/"))
 
 ####### 1. DATA INPUT ---------------------------------------------------------------------------- 
-  ## Choosing the reference genes (step 2)
+  ### Choosing the reference genes (step 2)
   output$refgen<-renderUI({
     
     if (is.null(input$file2))
@@ -81,15 +82,17 @@ shinyServer(function(input, output) {
   })
   
   
-####### 2. CALCULATIONS------------------------------------------------------------------------
+####### 2.1 CALCULATIONS - Fold Difference------------------------------------------------------------------------
   
+  
+  # Main fold difference output table values
   Fd <- reactive({
     
     if(!is.null(input$control)){
     if (input$eff.file == T){
       
       # Inputs: Input files(raw or ct), configuration file, reference gene names, control sample names, is it raw fluorescence data? [T/F]
-    Fd <- funkcja1(input$file1, input$file2, input$refergene, input$control, input$fluo.file, input$fluo.thresh, input$fluo.cols)
+    Fd <- funkcja1(input$file1, input$file2, input$refergene, input$control, input$fluo.file, fluo())
     
     }else{
         
@@ -99,8 +102,9 @@ shinyServer(function(input, output) {
     
     Fd
     })
+  
 
-  #Output matrix
+  # Rendering the table with Fold difference
   output$tabelka <- renderTable({
     
     if(input$act == 0){
@@ -109,13 +113,71 @@ shinyServer(function(input, output) {
       return(mes)
     }else {
 
+      # Message if any files are missing
       if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) )
         return('One of the input files or information is missing!')
 
       Fd()
     }
   })
+  
+####### 2.2 CALCULATIONS - fluorescence------------------------------------------------------------------------
+  
+  ##### Fluorescence - modelling is done here and results are in fluo variable
+  fluo <- reactive({
+    # If we have fluorescence data, we calculate Ct and everything else
+    if(input$fluo.file == T){
+      fluo <- fluorescence1(input$file1, input$fluo.thresh, input$fluo.cols + 1)
+      # If not, we give it NA so there are no missing values for funkcja1 and 2
+    } else{
+      fluo <- NA
+    }
+  })
+  
+  
+  ##### Helper variable to know which gene modeling results to display
+  gene_name <- reactive({
+    # Retreiving gene names from filenames to choose which modeling results to display (fluorescence)
+    gene_name <- as.matrix(data.frame(strsplit(input$file1$name, '[.]'))[1, ])
+    gene_name <- lapply(gene_name, strsplit, '_')
+    gene_name <- unlist(lapply(gene_name, function(l) l[[1]][1]))
+    gene_name
+  })
+  
+  ##### Dropdown list to select gene to display on fluorescence modelling page 
+  output$fluo_gene <- renderUI({
+    
+    tryCatch(
 
+    selectizeInput("fluo_choice_gene", label="Gene to display",
+    choices=gene_name(), multiple=F),
+    error = function(e) {return(c(''))}
+    )
+    
+  })
+
+  ##### Output table of detailed modelling information
+  output$fluo_tab <- DT::renderDataTable({
+    
+    if(input$act == 0){
+      mes <- data.frame("Please upload the files, make relevant selections and press the 'ANALYSE' button.")
+      colnames(mes) <- 'Information'
+      return(mes)
+    }else if(input$fluo.file == F){
+      mes <- data.frame("You didn't choose to analyse raw fluorescence data.")
+      colnames(mes) <- 'Information'
+      return(mes)
+    }else {
+      
+      # Message if any files are missing
+      if (is.null(input$file1) | is.null(input$file2) | is.null(input$refergene) )
+        return('One of the input files or information is missing!')
+      
+      DT::datatable(data.frame(fluo()[[which(input$fluo_choice_gene == gene_name())]]))
+      
+    }
+  })
+  
 
 ####### 3. GRAPHICAL RESULTS -------------------------------------------------------------
   
